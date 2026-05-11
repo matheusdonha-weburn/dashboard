@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Donha Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --red:       #E3001B;
+    --red-dark:  #A80014;
+    --red-glow:  rgba(227,0,27,0.18);
+    --black:     #0A0A0A;
+    --surface:   #111111;
+    --surface2:  #181818;
+    --surface3:  #202020;
+    --border:    rgba(255,255,255,0.07);
+    --border-red:rgba(227,0,27,0.35);
+    --text:      #F0F0F0;
+    --text-dim:  #888888;
+    --text-muted:#444444;
+    --green:     #22c55e;
+    --amber:     #f59e0b;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--black);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE TEXTURE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: relative;
+    padding: 28px 40px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+    background: linear-gradient(180deg, rgba(227,0,27,0.06) 0%, transparent 100%);
+  }
+
+  .logo-area {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .logo-icon {
+    width: 42px; height: 42px;
+    background: var(--red);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    color: white;
+    letter-spacing: 1px;
+    box-shadow: 0 0 20px var(--red-glow);
+  }
+
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 3px;
+    color: var(--text);
+    line-height: 1;
+  }
+
+  h1 span { color: var(--red); }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .status-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 8px var(--green);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%,100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .status-label {
+    font-size: 11px;
+    color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 1px;
+  }
+
+  /* ── CONTROLS BAR ── */
+  .controls {
+    position: relative;
+    padding: 20px 40px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    z-index: 10;
+  }
+
+  /* Segment tabs */
+  .seg-tabs {
+    display: flex;
+    gap: 4px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 4px;
+  }
+
+  .seg-tab {
+    padding: 7px 18px;
+    border-radius: 7px;
+    border: none;
+    background: transparent;
+    color: var(--text-dim);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.18s;
+    white-space: nowrap;
+  }
+
+  .seg-tab:hover { color: var(--text); background: var(--surface3); }
+
+  .seg-tab.active {
+    background: var(--red);
+    color: #fff;
+    box-shadow: 0 0 16px var(--red-glow);
+  }
+
+  /* Date pickers */
+  .date-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+  }
+
+  .date-label {
+    font-size: 11px;
+    color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 1px;
+  }
+
+  input[type="date"] {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    padding: 7px 12px;
+    outline: none;
+    transition: border-color 0.2s;
+    cursor: pointer;
+  }
+
+  input[type="date"]:focus { border-color: var(--red); }
+  input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.6); cursor: pointer; }
+
+  .btn-apply {
+    padding: 8px 20px;
+    background: var(--red);
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.18s;
+    box-shadow: 0 0 14px var(--red-glow);
+    letter-spacing: 0.5px;
+  }
+
+  .btn-apply:hover { background: var(--red-dark); transform: translateY(-1px); }
+
+  /* ── MAIN LAYOUT ── */
+  main {
+    position: relative;
+    z-index: 1;
+    padding: 32px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  /* ── CARDS GRID ── */
+  .cards-section { display: flex; flex-direction: column; gap: 12px; }
+
+  .cards-section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 14px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+    cursor: default;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--red);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .card:hover { border-color: var(--border-red); transform: translateY(-2px); }
+  .card:hover::before { opacity: 1; }
+
+  .card.highlight {
+    border-color: var(--border-red);
+    background: linear-gradient(135deg, var(--surface) 0%, rgba(227,0,27,0.05) 100%);
+  }
+
+  .card.highlight::before { opacity: 1; }
+
+  .card.dimmed {
+    opacity: 0.45;
+    border-style: dashed;
+  }
+
+  .card.dimmed:hover { opacity: 0.85; }
+
+  /* toggle eye */
+  .card-toggle {
+    position: absolute;
+    top: 12px; right: 12px;
+    width: 22px; height: 22px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: var(--text-muted);
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 4px;
+    transition: color 0.2s, background 0.2s;
+    font-size: 13px;
+  }
+
+  .card-toggle:hover { color: var(--text); background: var(--surface3); }
+
+  .card-icon {
+    font-size: 18px;
+    margin-bottom: 12px;
+    display: block;
+  }
+
+  .card-label {
+    font-size: 11px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+
+  .card-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 40px;
+    line-height: 1;
+    color: var(--text);
+    letter-spacing: 1px;
+  }
+
+  .card-value.is-rate {
+    font-size: 32px;
+    color: var(--red);
+  }
+
+  .card-value.na {
+    font-size: 28px;
+    color: var(--text-muted);
+  }
+
+  .card-sub {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 6px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .card-note {
+    font-size: 10px;
+    color: var(--amber);
+    margin-top: 4px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* extras row */
+  .extras-row {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+
+  .extras-row .card {
+    flex: 1;
+    min-width: 180px;
+    max-width: 280px;
+    border-color: rgba(245,158,11,0.25);
+  }
+
+  .extras-row .card:hover { border-color: rgba(245,158,11,0.5); }
+  .extras-row .card::before { background: var(--amber); }
+
+  .extras-row .card.highlight::before { opacity: 1; }
+
+  /* ── CHART PANEL ── */
+  .chart-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .chart-header {
+    padding: 20px 24px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .chart-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 2px;
+    color: var(--text);
+  }
+
+  .toggles {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .metric-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-dim);
+    transition: all 0.18s;
+    user-select: none;
+    white-space: nowrap;
+  }
+
+  .metric-toggle .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .metric-toggle.active {
+    border-color: transparent;
+    color: var(--text);
+  }
+
+  .chart-body {
+    padding: 20px 24px 24px;
+    height: 320px;
+    position: relative;
+  }
+
+  /* ── FUNNEL ── */
+  .funnel-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .funnel-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 2px;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+
+  .funnel-step {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    position: relative;
+  }
+
+  .funnel-bar-wrap {
+    flex: 1;
+    position: relative;
+    height: 44px;
+    display: flex;
+    align-items: center;
+  }
+
+  .funnel-bar-bg {
+    position: absolute;
+    inset: 0;
+    background: var(--surface2);
+    border-radius: 8px;
+  }
+
+  .funnel-bar-fill {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    border-radius: 8px;
+    background: var(--red);
+    transition: width 0.6s cubic-bezier(.34,1.56,.64,1);
+    min-width: 2px;
+  }
+
+  .funnel-bar-text {
+    position: relative;
+    z-index: 1;
+    padding: 0 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .funnel-step-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: #fff;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+    white-space: nowrap;
+  }
+
+  .funnel-step-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    color: #fff;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+  }
+
+  .funnel-pct {
+    width: 56px;
+    text-align: right;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    white-space: nowrap;
+  }
+
+  .funnel-connector {
+    width: 2px;
+    height: 10px;
+    background: linear-gradient(to bottom, var(--red), transparent);
+    margin: 0 auto;
+    margin-left: calc(50% - 1px);
+  }
+
+  /* ── BOTTOM CHARTS ROW ── */
+  .bottom-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  /* ── LOADING / ERROR ── */
+  .overlay {
+    position: fixed; inset: 0;
+    background: rgba(10,10,10,0.92);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    gap: 16px;
+  }
+
+  .spinner {
+    width: 44px; height: 44px;
+    border: 3px solid var(--border);
+    border-top-color: var(--red);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .overlay-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+  }
+
+  .error-box {
+    background: rgba(227,0,27,0.1);
+    border: 1px solid var(--red);
+    border-radius: 12px;
+    padding: 24px 32px;
+    text-align: center;
+    max-width: 480px;
+  }
+
+  .error-box h3 { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: var(--red); margin-bottom: 8px; }
+  .error-box p { font-size: 13px; color: var(--text-dim); line-height: 1.6; }
+
+  /* ── EMPTY STATE ── */
+  .empty-state {
+    padding: 48px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 13px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    header, .controls, main { padding-left: 20px; padding-right: 20px; }
+    .bottom-row { grid-template-columns: 1fr; }
+    .date-group { margin-left: 0; width: 100%; flex-wrap: wrap; }
+    .cards-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOADING OVERLAY -->
+<div class="overlay" id="loadingOverlay">
+  <div class="spinner"></div>
+  <div class="overlay-text">CARREGANDO DADOS...</div>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="logo-area">
+    <div class="logo-icon">D</div>
+    <div>
+      <h1>DONHA <span>DASHBOARD</span></h1>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="status-dot" id="statusDot" style="background:var(--text-muted);box-shadow:none;animation:none;"></div>
+    <div class="status-label" id="statusLabel">AGUARDANDO</div>
+  </div>
+</header>
+
+<!-- CONTROLS -->
+<div class="controls">
+  <!-- Segment Tabs -->
+  <div class="seg-tabs">
+    <button class="seg-tab active" data-seg="todos">TODOS</button>
+    <button class="seg-tab" data-seg="mkt">MKT</button>
+    <button class="seg-tab" data-seg="assinaturas">ASSINATURAS</button>
+    <button class="seg-tab" data-seg="webhook">WEBHOOK</button>
+  </div>
+
+  <!-- Date Range -->
+  <div class="date-group">
+    <span class="date-label">DE</span>
+    <input type="date" id="dateFrom"/>
+    <span class="date-label">ATÉ</span>
+    <input type="date" id="dateTo"/>
+    <button class="btn-apply" id="btnApply">APLICAR</button>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main>
+
+  <!-- CARDS SECTION -->
+  <div class="cards-section">
+    <div class="cards-section-label">PRINCIPAIS MÉTRICAS</div>
+    <div class="cards-grid" id="cardsGrid"></div>
+
+    <div class="cards-section-label" style="margin-top:8px;">DADOS EXTRAS</div>
+    <div class="extras-row" id="extrasRow"></div>
+  </div>
+
+  <!-- LINE CHART -->
+  <div class="chart-panel">
+    <div class="chart-header">
+      <div class="chart-title">EVOLUÇÃO DIÁRIA</div>
+      <div class="toggles" id="chartToggles"></div>
+    </div>
+    <div class="chart-body">
+      <canvas id="lineChart"></canvas>
+    </div>
+  </div>
+
+  <!-- FUNNEL -->
+  <div class="funnel-panel">
+    <div class="funnel-title">FUNIL DO PERÍODO</div>
+    <div id="funnelContainer"></div>
+  </div>
+
+</main>
+
+<script>
+// =====================================================
+// CONFIG — COLE AQUI A URL DO SEU APP SCRIPT
+// =====================================================
+const APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxBoesSkxWCPatXXwUaPxYE8ugcfknJ3vKGZgZTVEG97TdljMYt9CvUtIOy7VXvDlZoLA/exec';
+
+// Fallback: CSV público do Google Sheets (para desenvolvimento)
+const SHEET_ID = '131kOelD9Uzr3SzgFdvRKBHM3Wc25QmkIo7tTHlw1ADw';
+const CSV_URL  = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=DADOS`;
+
+// =====================================================
+// STATE
+// =====================================================
+let allData    = [];   // array de { date, todos, mkt, assinaturas, webhook }
+let seg        = 'todos';
+let lineChart  = null;
+
+const METRIC_COLORS = {
+  chamados:       '#E3001B',
+  conectados:     '#ff6b6b',
+  vendas:         '#22c55e',
+  links:          '#60a5fa',
+  taxaConexao:    '#f59e0b',
+  convTotal:      '#a78bfa',
+  convConexao:    '#34d399',
+  total:          '#666666',
+  naoChamados:    '#444444',
+};
+
+const METRICS_CONFIG = [
+  { key: 'chamados',    label: 'Chamados',         format: 'num',  defaultOn: true,  important: true  },
+  { key: 'conectados',  label: 'Conectados',        format: 'num',  defaultOn: true,  important: true  },
+  { key: 'vendas',      label: 'Vendas',            format: 'num',  defaultOn: true,  important: true  },
+  { key: 'taxaConexao', label: 'Taxa Conexão',      format: 'pct',  defaultOn: true,  important: true  },
+  { key: 'convTotal',   label: 'Conv. Total',       format: 'pct',  defaultOn: true,  important: true  },
+  { key: 'convConexao', label: 'Conv. Conexão',     format: 'pct',  defaultOn: true,  important: true  },
+  { key: 'total',       label: 'Todos',             format: 'num',  defaultOn: false, important: false },
+  { key: 'naoChamados', label: 'Não Chamados',      format: 'num',  defaultOn: false, important: false },
+  { key: 'links',       label: 'Links Enviados',    format: 'num',  defaultOn: false, important: false },
+];
+
+const CARDS_CONFIG = [
+  { key: 'total',       label: 'Todos',          icon: '👥', format: 'num',  important: false, note: null },
+  { key: 'naoChamados', label: 'Não Chamados',   icon: '⛔', format: 'num',  important: false, note: null },
+  { key: 'chamados',    label: 'Chamados',        icon: '📤', format: 'num',  important: true,  note: null },
+  { key: 'conectados',  label: 'Conectados',      icon: '💬', format: 'num',  important: true,  note: null },
+  { key: 'links',       label: 'Links Enviados',  icon: '🔗', format: 'num',  important: false, note: null },
+  { key: 'vendas',      label: 'Vendas',          icon: '💰', format: 'num',  important: true,  note: null },
+  { key: 'taxaConexao', label: 'Taxa Conexão',    icon: '📡', format: 'pct',  important: true,  note: null },
+  { key: 'convTotal',   label: 'Conv. / Chamados',icon: '📈', format: 'pct',  important: true,  note: null },
+  { key: 'convConexao', label: 'Conv. / Conectados',icon:'🎯', format: 'pct', important: true,  note: null },
+];
+
+const EXTRAS_CONFIG = [
+  { key: 'semInteresse',   label: 'Sem Interesse',  icon: '🚫', note: null },
+  { key: 'transferencias', label: 'Transferências',  icon: '🔄', note: 'Disponível a partir de Abril/2026' },
+];
+
+// visibility state
+const cardVisibility  = {};
+CARDS_CONFIG.forEach(c  => cardVisibility[c.key]  = c.important);
+const metricVisibility = {};
+METRICS_CONFIG.forEach(m => metricVisibility[m.key] = m.defaultOn);
+
+// =====================================================
+// DATA FETCH
+// =====================================================
+async function fetchData() {
+  // Try App Script first, fall back to CSV
+  if (APP_SCRIPT_URL && APP_SCRIPT_URL !== 'SEU_APP_SCRIPT_URL_AQUI') {
+    try {
+      const r = await fetch(APP_SCRIPT_URL);
+      if (r.ok) {
+        allData = await r.json();
+        setStatus('online');
+        return;
+      }
+    } catch(e) { /* fallback */ }
+  }
+
+  // CSV fallback
+  try {
+    const r = await fetch(CSV_URL);
+    if (!r.ok) throw new Error('CSV fetch failed');
+    const text = await r.text();
+    allData = parseCSV(text);
+    setStatus('csv');
+  } catch(e) {
+    setStatus('error');
+    showError();
+  }
+}
+
+function parseCSV(text) {
+  const lines = text.split('\n').map(l => l.replace(/\r/g, ''));
+  const result = [];
+
+  for (let i = 1; i < lines.length; i++) {
+    const row = parseCSVLine(lines[i]);
+    if (!row || row.length < 2) continue;
+
+    const dateRaw = row[0];
+    // Skip month headers and empty rows
+    if (!dateRaw || !/^\d{4}/.test(dateRaw.replace(/^"/, ''))) continue;
+
+    const dateStr = dateRaw.replace(/"/g,'').substring(0, 10);
+    if (!dateStr || dateStr.length < 10) continue;
+
+    const n = (idx) => {
+      const v = row[idx];
+      if (v === undefined || v === null || v === '' || v === '""') return null;
+      const clean = String(v).replace(/"/g,'').replace(',','.');
+      const num = parseFloat(clean);
+      return isNaN(num) ? null : num;
+    };
+
+    result.push({
+      date: dateStr,
+      todos: {
+        total:          n(1),
+        naoChamados:    n(2),
+        chamados:       n(3),
+        conectados:     n(4),
+        links:          n(6),
+        vendas:         n(7),
+        semInteresse:   n(8),
+        transferencias: n(9)
+      },
+      mkt: {
+        total:          n(11),
+        naoChamados:    null,
+        chamados:       n(12),
+        conectados:     n(13),
+        links:          null,
+        vendas:         n(15),
+        semInteresse:   null,
+        transferencias: null
+      },
+      assinaturas: {
+        total:          n(18),
+        naoChamados:    null,
+        chamados:       n(19),
+        conectados:     n(20),
+        links:          null,
+        vendas:         n(22),
+        semInteresse:   null,
+        transferencias: null
+      },
+      webhook: {
+        total:          n(30),
+        naoChamados:    null,
+        chamados:       n(31),
+        conectados:     n(32),
+        links:          n(34),
+        vendas:         n(36),
+        semInteresse:   n(39),
+        transferencias: null
+      }
+    });
+  }
+
+  return result;
+}
+
+function parseCSVLine(line) {
+  const result = [];
+  let cur = '', inQ = false;
+  for (let i = 0; i < line.length; i++) {
+    const c = line[i];
+    if (c === '"') { inQ = !inQ; }
+    else if (c === ',' && !inQ) { result.push(cur); cur = ''; }
+    else { cur += c; }
+  }
+  result.push(cur);
+  return result;
+}
+
+// =====================================================
+// UTILS
+// =====================================================
+function setStatus(state) {
+  const dot = document.getElementById('statusDot');
+  const lbl = document.getElementById('statusLabel');
+  if (state === 'online') {
+    dot.style.cssText = 'background:var(--green);box-shadow:0 0 8px var(--green);animation:pulse 2s infinite;';
+    lbl.textContent = 'AO VIVO';
+  } else if (state === 'csv') {
+    dot.style.cssText = 'background:var(--amber);box-shadow:0 0 8px var(--amber);animation:pulse 2s infinite;';
+    lbl.textContent = 'CSV PÚBLICO';
+  } else {
+    dot.style.cssText = 'background:var(--red);box-shadow:0 0 8px var(--red-glow);animation:none;';
+    lbl.textContent = 'ERRO';
+  }
+}
+
+function showError() {
+  const ov = document.getElementById('loadingOverlay');
+  ov.innerHTML = `
+    <div class="error-box">
+      <h3>ERRO AO CARREGAR</h3>
+      <p>Não foi possível buscar os dados.<br>Verifique se o App Script está configurado e a planilha está publicada.</p>
+    </div>`;
+}
+
+function getFilteredData() {
+  const from = document.getElementById('dateFrom').value;
+  const to   = document.getElementById('dateTo').value;
+  return allData.filter(d => {
+    if (from && d.date < from) return false;
+    if (to   && d.date > to)   return false;
+    return true;
+  });
+}
+
+function getSegData(row) { return row[seg]; }
+
+function sumField(rows, field) {
+  let s = 0, hasAny = false;
+  rows.forEach(r => {
+    const v = getSegData(r)[field];
+    if (v !== null) { s += v; hasAny = true; }
+  });
+  return hasAny ? s : null;
+}
+
+function fmtNum(v) {
+  if (v === null) return null;
+  return Math.round(v).toLocaleString('pt-BR');
+}
+
+function fmtPct(v) {
+  if (v === null) return null;
+  return v.toFixed(1) + '%';
+}
+
+function computeAggregates(rows) {
+  const total          = sumField(rows, 'total');
+  const naoChamados    = sumField(rows, 'naoChamados');
+  const chamados       = sumField(rows, 'chamados');
+  const conectados     = sumField(rows, 'conectados');
+  const links          = sumField(rows, 'links');
+  const vendas         = sumField(rows, 'vendas');
+  const semInteresse   = sumField(rows, 'semInteresse');
+  const transferencias = sumField(rows, 'transferencias');
+
+  const taxaConexao = (chamados && conectados !== null) ? (conectados / chamados * 100) : null;
+  const convTotal   = (chamados && vendas !== null)     ? (vendas / chamados * 100)     : null;
+  const convConexao = (conectados && vendas !== null)   ? (vendas / conectados * 100)   : null;
+
+  return { total, naoChamados, chamados, conectados, links, vendas,
+           semInteresse, transferencias, taxaConexao, convTotal, convConexao };
+}
+
+// =====================================================
+// RENDER CARDS
+// =====================================================
+function renderCards(agg) {
+  const grid = document.getElementById('cardsGrid');
+  grid.innerHTML = '';
+
+  CARDS_CONFIG.forEach(cfg => {
+    const rawVal = agg[cfg.key];
+    const visible = cardVisibility[cfg.key];
+    const isRate  = cfg.format === 'pct';
+
+    let displayVal;
+    if (rawVal === null) {
+      displayVal = null;
+    } else if (isRate) {
+      displayVal = fmtPct(rawVal);
+    } else {
+      displayVal = fmtNum(rawVal);
+    }
+
+    const card = document.createElement('div');
+    card.className = 'card' + (!visible ? ' dimmed' : '') + (cfg.important && visible ? ' highlight' : '');
+
+    const eyeIcon = visible ? '👁' : '🙈';
+
+    // Note for transferencias if seg=todos
+    let noteHTML = '';
+    if (cfg.key === 'transferencias' && seg === 'todos') {
+      noteHTML = `<div class="card-note">⚠ Disponível a partir de Abril/2026</div>`;
+    }
+
+    card.innerHTML = `
+      <button class="card-toggle" title="Mostrar/ocultar">${eyeIcon}</button>
+      <span class="card-icon">${cfg.icon}</span>
+      <div class="card-label">${cfg.label}</div>
+      <div class="card-value ${isRate ? 'is-rate' : ''} ${displayVal === null ? 'na' : ''}">
+        ${displayVal !== null ? displayVal : '—'}
+      </div>
+      ${rawVal !== null && !isRate ? `<div class="card-sub">${rawVal.toLocaleString('pt-BR')} leads</div>` : ''}
+      ${noteHTML}
+    `;
+
+    card.querySelector('.card-toggle').addEventListener('click', (e) => {
+      e.stopPropagation();
+      cardVisibility[cfg.key] = !cardVisibility[cfg.key];
+      renderCards(agg);
+    });
+
+    grid.appendChild(card);
+  });
+
+  // EXTRAS
+  const extras = document.getElementById('extrasRow');
+  extras.innerHTML = '';
+
+  EXTRAS_CONFIG.forEach(cfg => {
+    const rawVal = agg[cfg.key];
+    const card = document.createElement('div');
+    card.className = 'card';
+
+    let noteHTML = '';
+    if (cfg.key === 'transferencias') {
+      noteHTML = `<div class="card-note">⚠ Disponível a partir de Abril/2026</div>`;
+    }
+    if (rawVal === null && cfg.key !== 'transferencias') {
+      noteHTML = `<div class="card-note">⚠ Coluna ainda não mapeada neste segmento</div>`;
+    }
+
+    card.innerHTML = `
+      <span class="card-icon">${cfg.icon}</span>
+      <div class="card-label">${cfg.label}</div>
+      <div class="card-value ${rawVal === null ? 'na' : ''}">${rawVal !== null ? fmtNum(rawVal) : '—'}</div>
+      ${noteHTML}
+    `;
+    extras.appendChild(card);
+  });
+}
+
+// =====================================================
+// RENDER LINE CHART
+// =====================================================
+function buildChartToggles() {
+  const container = document.getElementById('chartToggles');
+  container.innerHTML = '';
+
+  METRICS_CONFIG.forEach(m => {
+    const color = METRIC_COLORS[m.key];
+    const active = metricVisibility[m.key];
+    const btn = document.createElement('div');
+    btn.className = 'metric-toggle' + (active ? ' active' : '');
+    btn.style.background = active ? color + '22' : '';
+    btn.style.borderColor = active ? color : '';
+    btn.style.color       = active ? '#fff' : '';
+    btn.innerHTML = `<span class="dot" style="background:${color}"></span>${m.label}`;
+    btn.addEventListener('click', () => {
+      metricVisibility[m.key] = !metricVisibility[m.key];
+      renderChart(getFilteredData());
+    });
+    container.appendChild(btn);
+  });
+}
+
+function renderChart(rows) {
+  // Rebuild toggles
+  buildChartToggles();
+
+  const labels = rows.map(r => {
+    const d = new Date(r.date + 'T12:00:00');
+    return d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+  });
+
+  const getMetricSeries = (key) => rows.map(r => {
+    const d = getSegData(r);
+    if (key === 'taxaConexao') return d.chamados ? (d.conectados || 0) / d.chamados * 100 : null;
+    if (key === 'convTotal')   return d.chamados ? (d.vendas    || 0) / d.chamados * 100 : null;
+    if (key === 'convConexao') return d.conectados ? (d.vendas  || 0) / d.conectados * 100 : null;
+    return d[key];
+  });
+
+  const datasets = METRICS_CONFIG
+    .filter(m => metricVisibility[m.key])
+    .map(m => ({
+      label: m.label,
+      data: getMetricSeries(m.key),
+      borderColor: METRIC_COLORS[m.key],
+      backgroundColor: METRIC_COLORS[m.key] + '18',
+      borderWidth: 2,
+      pointRadius: rows.length > 60 ? 0 : 3,
+      pointHoverRadius: 5,
+      tension: 0.35,
+      fill: false,
+      yAxisID: m.format === 'pct' ? 'yPct' : 'yNum',
+      spanGaps: true,
+    }));
+
+  if (lineChart) lineChart.destroy();
+
+  const ctx = document.getElementById('lineChart').getContext('2d');
+  lineChart = new Chart(ctx, {
+    type: 'line',
+    data: { labels, datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#181818',
+          borderColor: '#333',
+          borderWidth: 1,
+          titleColor: '#f0f0f0',
+          bodyColor: '#aaa',
+          padding: 12,
+          callbacks: {
+            label: ctx => {
+              const m = METRICS_CONFIG.find(x => x.label === ctx.dataset.label);
+              if (!m) return ctx.dataset.label + ': ' + ctx.parsed.y;
+              const v = ctx.parsed.y;
+              if (v === null) return ctx.dataset.label + ': —';
+              return ctx.dataset.label + ': ' + (m.format === 'pct' ? v.toFixed(1) + '%' : Math.round(v).toLocaleString('pt-BR'));
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          ticks: { color: '#666', font: { family: 'JetBrains Mono', size: 10 }, maxTicksLimit: 15 },
+          grid: { color: 'rgba(255,255,255,0.04)' },
+        },
+        yNum: {
+          type: 'linear',
+          position: 'left',
+          ticks: { color: '#666', font: { family: 'JetBrains Mono', size: 10 } },
+          grid: { color: 'rgba(255,255,255,0.04)' },
+        },
+        yPct: {
+          type: 'linear',
+          position: 'right',
+          ticks: { color: '#888', font: { family: 'JetBrains Mono', size: 10 }, callback: v => v.toFixed(0) + '%' },
+          grid: { drawOnChartArea: false },
+        }
+      }
+    }
+  });
+}
+
+// =====================================================
+// RENDER FUNNEL
+// =====================================================
+function renderFunnel(agg) {
+  const steps = [
+    { label: 'Chamados',    value: agg.chamados },
+    { label: 'Conectados',  value: agg.conectados },
+    { label: 'Links',       value: agg.links },
+    { label: 'Vendas',      value: agg.vendas },
+  ].filter(s => s.value !== null && s.value > 0);
+
+  const container = document.getElementById('funnelContainer');
+  container.innerHTML = '';
+
+  if (!steps.length) {
+    container.innerHTML = '<div class="empty-state">Sem dados para o funil no período selecionado.</div>';
+    return;
+  }
+
+  const maxVal = steps[0].value || 1;
+
+  steps.forEach((step, i) => {
+    const pct = ((step.value / maxVal) * 100).toFixed(0);
+    const relPct = i === 0 ? '100%' : (step.value / maxVal * 100).toFixed(0) + '%';
+
+    if (i > 0) {
+      const conn = document.createElement('div');
+      conn.className = 'funnel-connector';
+      container.appendChild(conn);
+    }
+
+    const el = document.createElement('div');
+    el.className = 'funnel-step';
+    el.innerHTML = `
+      <div class="funnel-bar-wrap">
+        <div class="funnel-bar-bg"></div>
+        <div class="funnel-bar-fill" style="width:0%"></div>
+        <div class="funnel-bar-text">
+          <span class="funnel-step-name">${step.label}</span>
+          <span class="funnel-step-val">${Math.round(step.value).toLocaleString('pt-BR')}</span>
+        </div>
+      </div>
+      <div class="funnel-pct">${i === 0 ? '100%' : (step.value / steps[0].value * 100).toFixed(1) + '%'}</div>
+    `;
+    container.appendChild(el);
+
+    // animate
+    setTimeout(() => {
+      el.querySelector('.funnel-bar-fill').style.width = relPct;
+    }, 50 + i * 80);
+  });
+}
+
+// =====================================================
+// INIT & EVENTS
+// =====================================================
+function setDefaultDates() {
+  if (!allData.length) return;
+  const dates = allData.map(d => d.date).filter(Boolean).sort();
+  const firstDate = dates[0];
+  const lastDate  = dates[dates.length - 1];
+
+  // Default: last 30 days of available data
+  const last = new Date(lastDate + 'T12:00:00');
+  const from = new Date(last);
+  from.setDate(from.getDate() - 30);
+  const fromStr = from.toISOString().substring(0, 10);
+  const clampedFrom = fromStr < firstDate ? firstDate : fromStr;
+
+  document.getElementById('dateFrom').value = clampedFrom;
+  document.getElementById('dateTo').value   = lastDate;
+}
+
+function refresh() {
+  const rows = getFilteredData();
+  const agg  = computeAggregates(rows);
+  renderCards(agg);
+  renderChart(rows);
+  renderFunnel(agg);
+}
+
+async function init() {
+  await fetchData();
+
+  document.getElementById('loadingOverlay').style.display = 'none';
+
+  if (!allData.length) { showError(); return; }
+
+  setDefaultDates();
+
+  // Segment tabs
+  document.querySelectorAll('.seg-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.seg-tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      seg = btn.dataset.seg;
+      refresh();
+    });
+  });
+
+  document.getElementById('btnApply').addEventListener('click', refresh);
+
+  refresh();
+}
+
+init();
+</script>
+</body>
+</html>
