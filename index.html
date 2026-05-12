@@ -22,6 +22,7 @@
     --text-muted:#444444;
     --green:     #22c55e;
     --amber:     #f59e0b;
+    --green-glow:rgba(34,197,94,0.2);
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -52,57 +53,73 @@
   }
 
   .logo-area { display: flex; align-items: center; gap: 14px; }
-
   .logo-icon {
     width: 40px; height: 40px; background: var(--red);
     border-radius: 10px; display: flex; align-items: center; justify-content: center;
     font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: white;
     box-shadow: 0 0 20px var(--red-glow);
   }
-
   h1 { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 3px; line-height: 1; }
   h1 span { color: var(--red); }
 
   .header-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-
-  .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--text-muted); }
+  .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--text-muted); flex-shrink: 0; }
   .status-label { font-size: 11px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace; letter-spacing: 1px; }
-
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+  /* ── TOP NAV TABS ── */
+  .top-nav {
+    display: flex; align-items: center; gap: 0;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 40px;
+    position: relative; z-index: 20;
+  }
+
+  .top-tab {
+    padding: 14px 22px;
+    border: none; border-bottom: 2px solid transparent;
+    background: transparent; color: var(--text-dim);
+    font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500;
+    cursor: pointer; transition: all 0.18s; white-space: nowrap;
+    display: flex; align-items: center; gap: 7px;
+    margin-bottom: -1px;
+  }
+  .top-tab:hover { color: var(--text); }
+  .top-tab.active { color: var(--text); border-bottom-color: var(--red); }
+  .top-tab .tab-icon { font-size: 14px; }
 
   /* ── CONTROLS ── */
   .controls {
     position: relative; z-index: 10;
-    padding: 14px 40px;
+    padding: 13px 40px;
     display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
     border-bottom: 1px solid var(--border);
-    background: var(--surface);
+    background: var(--surface2);
   }
 
   .seg-tabs {
     display: flex; gap: 3px;
-    background: var(--surface2); border: 1px solid var(--border);
+    background: var(--surface); border: 1px solid var(--border);
     border-radius: 10px; padding: 4px;
   }
-
   .seg-tab {
-    padding: 7px 15px; border-radius: 7px; border: none;
+    padding: 6px 14px; border-radius: 7px; border: none;
     background: transparent; color: var(--text-dim);
-    font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500;
+    font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500;
     cursor: pointer; transition: all 0.18s; white-space: nowrap;
   }
   .seg-tab:hover { color: var(--text); background: var(--surface3); }
   .seg-tab.active { background: var(--red); color: #fff; box-shadow: 0 0 16px var(--red-glow); }
 
-  /* View mode */
+  /* view toggle */
   .view-toggle {
     display: flex; gap: 3px;
-    background: var(--surface2); border: 1px solid var(--border);
+    background: var(--surface); border: 1px solid var(--border);
     border-radius: 10px; padding: 4px;
   }
-
   .view-btn {
-    padding: 7px 13px; border-radius: 7px; border: 1px solid transparent;
+    padding: 6px 13px; border-radius: 7px; border: 1px solid transparent;
     background: transparent; color: var(--text-dim);
     font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500;
     cursor: pointer; transition: all 0.18s;
@@ -111,23 +128,21 @@
   .view-btn:hover { color: var(--text); background: var(--surface3); }
   .view-btn.active { background: var(--surface3); color: var(--text); border-color: var(--border-red); }
 
-  /* Dates */
+  /* dates */
   .date-group { display: flex; align-items: center; gap: 8px; margin-left: auto; flex-wrap: wrap; }
   .date-label { font-size: 11px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace; letter-spacing: 1px; }
-
   input[type="date"] {
-    background: var(--surface2); border: 1px solid var(--border);
+    background: var(--surface); border: 1px solid var(--border);
     border-radius: 8px; color: var(--text);
     font-family: 'JetBrains Mono', monospace; font-size: 12px;
-    padding: 7px 12px; outline: none; transition: border-color 0.2s; cursor: pointer;
+    padding: 6px 11px; outline: none; transition: border-color 0.2s; cursor: pointer;
   }
   input[type="date"]:focus { border-color: var(--red); }
   input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.6); cursor: pointer; }
-
   .btn-apply {
-    padding: 8px 18px; background: var(--red); border: none;
+    padding: 7px 16px; background: var(--red); border: none;
     border-radius: 8px; color: #fff; font-family: 'DM Sans', sans-serif;
-    font-weight: 600; font-size: 13px; cursor: pointer; transition: all 0.18s;
+    font-weight: 600; font-size: 12px; cursor: pointer; transition: all 0.18s;
     box-shadow: 0 0 14px var(--red-glow);
   }
   .btn-apply:hover { background: var(--red-dark); transform: translateY(-1px); }
@@ -135,21 +150,18 @@
   /* ── MAIN ── */
   main { position: relative; z-index: 1; padding: 26px 40px; display: flex; flex-direction: column; gap: 26px; }
 
+  /* ── PAGE PANELS ── */
+  .page { display: none; flex-direction: column; gap: 26px; }
+  .page.active { display: flex; }
+
   /* ── CARDS ── */
   .cards-section { display: flex; flex-direction: column; gap: 10px; }
-
-  .cards-section-header {
-    display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
-  }
-
-  .cards-section-label {
-    font-family: 'JetBrains Mono', monospace; font-size: 10px;
-    letter-spacing: 3px; color: var(--text-muted); text-transform: uppercase;
-  }
+  .cards-section-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .cards-section-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 3px; color: var(--text-muted); text-transform: uppercase; }
 
   .btn-toggle-secondary {
     display: flex; align-items: center; gap: 7px;
-    padding: 6px 14px; border-radius: 8px;
+    padding: 5px 13px; border-radius: 8px;
     border: 1px solid var(--border); background: var(--surface2);
     color: var(--text-dim); font-family: 'DM Sans', sans-serif;
     font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.18s;
@@ -157,11 +169,7 @@
   .btn-toggle-secondary:hover { border-color: var(--border-red); color: var(--text); }
   .btn-toggle-secondary.active { border-color: var(--border-red); color: var(--text); background: rgba(227,0,27,0.08); }
 
-  .cards-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(188px, 1fr));
-    gap: 12px;
-  }
+  .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(185px, 1fr)); gap: 12px; }
 
   .card {
     background: var(--surface); border: 1px solid var(--border);
@@ -176,6 +184,8 @@
   .card:hover::before { opacity: 1; }
   .card.highlight { border-color: var(--border-red); background: linear-gradient(135deg, var(--surface) 0%, rgba(227,0,27,0.05) 100%); }
   .card.highlight::before { opacity: 1; }
+  .card.card-green { border-color: rgba(34,197,94,0.35); background: linear-gradient(135deg, var(--surface) 0%, rgba(34,197,94,0.05) 100%); }
+  .card.card-green::before { background: var(--green); opacity: 1; }
 
   .secondary-block { display: none; flex-direction: column; gap: 10px; }
   .secondary-block.visible { display: flex; }
@@ -184,6 +194,7 @@
   .card-label { font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 500; margin-bottom: 5px; }
   .card-value { font-family: 'Bebas Neue', sans-serif; font-size: 38px; line-height: 1; color: var(--text); }
   .card-value.is-rate { font-size: 30px; color: var(--red); }
+  .card-value.is-green-rate { font-size: 30px; color: var(--green); }
   .card-value.na { font-size: 26px; color: var(--text-muted); }
   .card-sub { font-size: 11px; color: var(--text-muted); margin-top: 5px; font-family: 'JetBrains Mono', monospace; }
   .card-note { font-size: 10px; color: var(--amber); margin-top: 4px; font-family: 'JetBrains Mono', monospace; }
@@ -194,38 +205,27 @@
   .extras-row .card:hover { border-color: rgba(245,158,11,0.45); }
 
   /* ── TABLE VIEW ── */
-  #tableView { display: none; }
-  #tableView.visible { display: block; }
-
-  .table-wrap {
-    overflow-x: auto; border-radius: 14px;
-    border: 1px solid var(--border); background: var(--surface);
-  }
-
-  table { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 800px; }
-
+  .table-wrap { overflow-x: auto; border-radius: 14px; border: 1px solid var(--border); background: var(--surface); }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 700px; }
   thead tr { background: var(--surface2); border-bottom: 1px solid var(--border-red); }
-  thead th {
-    padding: 12px 14px; text-align: left;
-    font-family: 'JetBrains Mono', monospace; font-size: 10px;
-    letter-spacing: 1.5px; color: var(--text-dim); text-transform: uppercase;
-    white-space: nowrap; font-weight: 600;
-  }
-  thead th:first-child { color: var(--red); min-width: 85px; }
-
+  thead th { padding: 11px 14px; text-align: left; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 1.5px; color: var(--text-dim); text-transform: uppercase; white-space: nowrap; font-weight: 600; }
+  thead th:first-child { color: var(--red); }
   tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
   tbody tr:last-child { border-bottom: none; }
   tbody tr:hover { background: var(--surface2); }
   tbody td { padding: 9px 14px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text); white-space: nowrap; }
   tbody td:first-child { color: var(--text-dim); font-size: 11px; }
-
-  td.val-red { color: var(--red); font-weight: 600; }
-  td.val-green { color: var(--green); }
-  td.val-na { color: var(--text-muted); }
-
   tfoot tr { border-top: 1px solid var(--border-red); background: var(--surface2); }
   tfoot td { padding: 10px 14px; font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 600; color: var(--text); white-space: nowrap; }
   tfoot td:first-child { color: var(--red); font-size: 10px; letter-spacing: 2px; }
+
+  /* pct color classes */
+  td.pct-green  { color: var(--green) !important; font-weight: 600; }
+  td.pct-white  { color: var(--text)  !important; }
+  td.pct-red    { color: var(--red)   !important; font-weight: 600; }
+  td.val-green  { color: var(--green) !important; }
+  td.val-red    { color: var(--red)   !important; font-weight: 600; }
+  td.val-na     { color: var(--text-muted) !important; }
 
   /* ── CHART ── */
   .chart-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
@@ -253,22 +253,60 @@
   .funnel-step-name { font-size: 12px; font-weight: 600; color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,.7); white-space: nowrap; }
   .funnel-step-val { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,.7); }
   .funnel-pct { width: 54px; text-align: right; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-dim); white-space: nowrap; }
-  .funnel-connector { width: 2px; height: 8px; background: linear-gradient(to bottom, var(--red), transparent); margin: 0 auto; margin-left: calc(50% - 1px); }
+  .funnel-connector { width: 2px; height: 8px; background: linear-gradient(to bottom, var(--red), transparent); margin-left: calc(50% - 1px); }
+
+  /* ── SALES PAGE ── */
+  .sales-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
+  .sales-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 20px; position: relative; overflow: hidden; transition: border-color 0.2s, transform 0.2s; }
+  .sales-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; opacity:0; transition:opacity 0.2s; }
+  .sales-card:hover { transform: translateY(-2px); }
+  .sales-card:hover::before { opacity:1; }
+  .sales-card.s-revenue { border-color: rgba(34,197,94,0.35); background: linear-gradient(135deg, var(--surface) 0%, rgba(34,197,94,0.05) 100%); }
+  .sales-card.s-revenue::before { background: var(--green); opacity:1; }
+  .sales-card.s-count { border-color: var(--border-red); background: linear-gradient(135deg, var(--surface) 0%, rgba(227,0,27,0.05) 100%); }
+  .sales-card.s-count::before { background: var(--red); opacity:1; }
+  .sales-card.s-ticket { border-color: rgba(245,158,11,0.35); background: linear-gradient(135deg, var(--surface) 0%, rgba(245,158,11,0.05) 100%); }
+  .sales-card.s-ticket::before { background: var(--amber); opacity:1; }
+  .sc-icon { font-size: 18px; margin-bottom: 10px; display: block; }
+  .sc-label { font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 500; margin-bottom: 6px; }
+  .sc-value { font-family: 'Bebas Neue', sans-serif; font-size: 40px; line-height: 1; color: var(--text); }
+  .sc-value.green { color: var(--green); }
+  .sc-value.amber { color: var(--amber); }
+  .sc-sub { font-size: 11px; color: var(--text-muted); margin-top: 6px; font-family: 'JetBrains Mono', monospace; }
+
+  /* Sales table */
+  .sales-table-wrap { overflow-x: auto; border-radius: 14px; border: 1px solid var(--border); background: var(--surface); }
+  .stbl { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 600px; }
+  .stbl thead tr { background: var(--surface2); border-bottom: 1px solid rgba(34,197,94,0.3); }
+  .stbl thead th { padding: 12px 16px; text-align: left; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 1.5px; color: var(--text-dim); text-transform: uppercase; white-space: nowrap; }
+  .stbl tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
+  .stbl tbody tr:last-child { border-bottom: none; }
+  .stbl tbody tr:hover { background: var(--surface2); }
+  .stbl tbody td { padding: 11px 16px; color: var(--text); font-size: 13px; }
+  .stbl td.td-name { font-weight: 500; }
+  .stbl td.td-date { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-dim); white-space: nowrap; }
+  .stbl td.td-val  { font-family: 'JetBrains Mono', monospace; color: var(--green); font-weight: 600; white-space: nowrap; }
+  .stbl td.td-prod { font-size: 12px; color: var(--text-dim); max-width: 340px; }
+  .stbl tfoot tr { border-top: 1px solid rgba(34,197,94,0.3); background: var(--surface2); }
+  .stbl tfoot td { padding: 10px 16px; font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 600; }
+  .stbl tfoot td.tf-label { color: var(--green); font-size: 10px; letter-spacing: 2px; }
+  .stbl tfoot td.tf-val   { color: var(--green); }
 
   /* ── LOADING ── */
-  .overlay { position: fixed; inset: 0; background: rgba(10,10,10,0.93); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; gap: 14px; }
-  .spinner { width: 42px; height: 42px; border: 3px solid var(--border); border-top-color: var(--red); border-radius: 50%; animation: spin 0.8s linear infinite; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .overlay-text { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-dim); letter-spacing: 2px; }
-  .error-box { background: rgba(227,0,27,0.1); border: 1px solid var(--red); border-radius: 12px; padding: 24px 32px; text-align: center; max-width: 460px; }
-  .error-box h3 { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--red); margin-bottom: 8px; }
-  .error-box p { font-size: 13px; color: var(--text-dim); line-height: 1.6; }
-  .empty-state { padding: 40px; text-align: center; color: var(--text-muted); font-size: 13px; font-family: 'JetBrains Mono', monospace; }
+  .overlay { position:fixed; inset:0; background:rgba(10,10,10,0.93); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:1000; gap:14px; }
+  .spinner { width:42px; height:42px; border:3px solid var(--border); border-top-color:var(--red); border-radius:50%; animation:spin 0.8s linear infinite; }
+  @keyframes spin { to{transform:rotate(360deg)} }
+  .overlay-text { font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--text-dim); letter-spacing:2px; }
+  .error-box { background:rgba(227,0,27,0.1); border:1px solid var(--red); border-radius:12px; padding:24px 32px; text-align:center; max-width:460px; }
+  .error-box h3 { font-family:'Bebas Neue',sans-serif; font-size:20px; color:var(--red); margin-bottom:8px; }
+  .error-box p  { font-size:13px; color:var(--text-dim); line-height:1.6; }
+  .empty-state { padding:40px; text-align:center; color:var(--text-muted); font-size:13px; font-family:'JetBrains Mono',monospace; }
 
-  @media (max-width: 768px) {
-    header, .controls, main { padding-left: 16px; padding-right: 16px; }
-    .date-group { margin-left: 0; width: 100%; }
-    .cards-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+  @media(max-width:768px){
+    header,.top-nav,.controls,main{padding-left:16px;padding-right:16px;}
+    .date-group{margin-left:0;width:100%;}
+    .cards-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));}
+    .top-tab{padding:12px 14px;font-size:12px;}
   }
 </style>
 </head>
@@ -279,6 +317,7 @@
   <div class="overlay-text">CARREGANDO DADOS...</div>
 </div>
 
+<!-- HEADER -->
 <header>
   <div class="logo-area">
     <div class="logo-icon">D</div>
@@ -290,15 +329,28 @@
   </div>
 </header>
 
-<div class="controls">
-  <div class="seg-tabs">
+<!-- TOP NAVIGATION TABS -->
+<nav class="top-nav">
+  <button class="top-tab active" data-page="metrics">
+    <span class="tab-icon">📊</span> Métricas
+  </button>
+  <button class="top-tab" data-page="sales">
+    <span class="tab-icon">💰</span> Vendas
+  </button>
+</nav>
+
+<!-- CONTROLS (shared date bar, seg tabs only for metrics) -->
+<div class="controls" id="controlsBar">
+  <!-- Metrics segment tabs -->
+  <div class="seg-tabs" id="segTabsWrap">
     <button class="seg-tab active" data-seg="mkt">MKT</button>
     <button class="seg-tab" data-seg="todos">TODOS</button>
     <button class="seg-tab" data-seg="assinaturas">ASSINATURAS ATIVAS</button>
     <button class="seg-tab" data-seg="webhook">WEBHOOK</button>
   </div>
 
-  <div class="view-toggle">
+  <!-- View toggle (metrics only) -->
+  <div class="view-toggle" id="viewToggleWrap">
     <button class="view-btn active" id="btnViewCards">
       <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><rect x="0" y="0" width="7" height="7" rx="1.5"/><rect x="9" y="0" width="7" height="7" rx="1.5"/><rect x="0" y="9" width="7" height="7" rx="1.5"/><rect x="9" y="9" width="7" height="7" rx="1.5"/></svg>
       Cards
@@ -309,6 +361,7 @@
     </button>
   </div>
 
+  <!-- Date range -->
   <div class="date-group">
     <span class="date-label">DE</span>
     <input type="date" id="dateFrom"/>
@@ -316,77 +369,136 @@
     <input type="date" id="dateTo"/>
     <button class="btn-apply" id="btnApply">APLICAR</button>
   </div>
+
+  <!-- Sales date range (hidden by default) -->
+  <div class="date-group" id="salesDateGroup" style="display:none;">
+    <span class="date-label">DE</span>
+    <input type="date" id="salesDateFrom"/>
+    <span class="date-label">ATÉ</span>
+    <input type="date" id="salesDateTo"/>
+    <button class="btn-apply" id="btnSalesApply">APLICAR</button>
+  </div>
 </div>
 
+<!-- MAIN -->
 <main>
 
-  <!-- ══ CARDS VIEW ══ -->
-  <div id="cardsView">
-    <div class="cards-section">
+  <!-- ════ PAGE: METRICS ════ -->
+  <div class="page active" id="pageMetrics">
 
-      <div class="cards-section-header">
-        <div class="cards-section-label">MÉTRICAS PRINCIPAIS</div>
-        <button class="btn-toggle-secondary" id="btnToggleSecondary">
-          <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><line x1="8" y1="5" x2="8" y2="11" stroke="currentColor" stroke-width="1.5"/><line x1="5" y1="8" x2="11" y2="8" stroke="currentColor" stroke-width="1.5"/></svg>
-          <span id="lblSecondary">Ver dados secundários</span>
-        </button>
+    <!-- CARDS VIEW -->
+    <div id="cardsView">
+      <div class="cards-section">
+        <div class="cards-section-header">
+          <div class="cards-section-label">MÉTRICAS PRINCIPAIS</div>
+          <button class="btn-toggle-secondary" id="btnToggleSecondary">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5"/><line x1="8" y1="5" x2="8" y2="11" stroke="currentColor" stroke-width="1.5"/><line x1="5" y1="8" x2="11" y2="8" stroke="currentColor" stroke-width="1.5"/></svg>
+            <span id="lblSecondary">Ver dados secundários</span>
+          </button>
+        </div>
+        <div class="cards-grid" id="gridPrimary"></div>
+
+        <div class="secondary-block" id="secondaryBlock">
+          <div class="cards-section-label" style="margin-top:4px;">DADOS SECUNDÁRIOS</div>
+          <div class="cards-grid" id="gridSecondary"></div>
+        </div>
+
+        <div class="cards-section-label" style="margin-top:6px;">DADOS EXTRAS</div>
+        <div class="extras-row" id="extrasRow"></div>
       </div>
 
-      <div class="cards-grid" id="gridPrimary"></div>
-
-      <div class="secondary-block" id="secondaryBlock">
-        <div class="cards-section-label" style="margin-top:4px;">DADOS SECUNDÁRIOS</div>
-        <div class="cards-grid" id="gridSecondary"></div>
+      <div class="chart-panel">
+        <div class="chart-header">
+          <div class="chart-title">EVOLUÇÃO DIÁRIA</div>
+          <div class="toggles" id="chartToggles"></div>
+        </div>
+        <div class="chart-body"><canvas id="lineChart"></canvas></div>
       </div>
 
-      <div class="cards-section-label" style="margin-top:6px;">DADOS EXTRAS</div>
-      <div class="extras-row" id="extrasRow"></div>
+      <div class="funnel-panel">
+        <div class="funnel-title">FUNIL DO PERÍODO</div>
+        <div id="funnelContainer"></div>
+      </div>
     </div>
+
+    <!-- TABLE VIEW -->
+    <div id="tableView" style="display:none;">
+      <div class="table-wrap">
+        <table>
+          <thead id="tableHead"></thead>
+          <tbody id="tableBody"></tbody>
+          <tfoot id="tableFoot"></tfoot>
+        </table>
+      </div>
+    </div>
+
+  </div><!-- /pageMetrics -->
+
+  <!-- ════ PAGE: SALES ════ -->
+  <div class="page" id="pageSales">
+
+    <div class="sales-cards" id="salesCards"></div>
 
     <div class="chart-panel">
       <div class="chart-header">
-        <div class="chart-title">EVOLUÇÃO DIÁRIA</div>
-        <div class="toggles" id="chartToggles"></div>
+        <div class="chart-title">EVOLUÇÃO DE VENDAS</div>
+        <div class="toggles" id="salesChartToggles"></div>
       </div>
-      <div class="chart-body"><canvas id="lineChart"></canvas></div>
+      <div class="chart-body"><canvas id="salesLineChart"></canvas></div>
     </div>
 
-    <div class="funnel-panel">
-      <div class="funnel-title">FUNIL DO PERÍODO</div>
-      <div id="funnelContainer"></div>
-    </div>
-  </div>
-
-  <!-- ══ TABLE VIEW ══ -->
-  <div id="tableView">
-    <div class="table-wrap">
-      <table>
-        <thead id="tableHead"></thead>
-        <tbody id="tableBody"></tbody>
-        <tfoot id="tableFoot"></tfoot>
+    <div class="cards-section-label">DETALHE DE VENDAS</div>
+    <div class="sales-table-wrap">
+      <table class="stbl">
+        <thead id="salesTableHead"></thead>
+        <tbody id="salesTableBody"></tbody>
+        <tfoot id="salesTableFoot"></tfoot>
       </table>
     </div>
-  </div>
+
+  </div><!-- /pageSales -->
 
 </main>
 
 <script>
-// ════════════════════════════════════════════
+// ════════════════════════════════════════════════════════
 // CONFIG
-// ════════════════════════════════════════════
+// ════════════════════════════════════════════════════════
 const APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxBoesSkxWCPatXXwUaPxYE8ugcfknJ3vKGZgZTVEG97TdljMYt9CvUtIOy7VXvDlZoLA/exec';
-const SHEET_ID = '131kOelD9Uzr3SzgFdvRKBHM3Wc25QmkIo7tTHlw1ADw';
-const CSV_URL  = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=DADOS`;
+const SHEET_ID         = '131kOelD9Uzr3SzgFdvRKBHM3Wc25QmkIo7tTHlw1ADw';
+const SALES_SHEET_ID   = '131kOelD9Uzr3SzgFdvRKBHM3Wc25QmkIo7tTHlw1ADw'; // mesmo spreadsheet
+const CSV_DADOS_URL    = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=DADOS`;
+const CSV_VENDAS_URL   = `https://docs.google.com/spreadsheets/d/${SALES_SHEET_ID}/gviz/tq?tqx=out:csv&sheet=VENDAS`;
 
-// ════════════════════════════════════════════
+// ════════════════════════════════════════════════════════
 // STATE
-// ════════════════════════════════════════════
-let allData        = [];
-let seg            = 'mkt';
-let viewMode       = 'cards';
-let showSecondary  = false;
-let lineChart      = null;
+// ════════════════════════════════════════════════════════
+let allData       = [];
+let allSales      = [];  // only rows with venda=Sim AND valor != null/empty
+let seg           = 'mkt';
+let viewMode      = 'cards';
+let activePage    = 'metrics';
+let showSecondary = false;
+let lineChart     = null;
+let salesChart    = null;
 
+// ─── PCT COLOR RULES ───────────────────────────────────
+const PCT_RULES = {
+  taxaConexao: { low:20, high:30 },   // <20 red, 20-30 white, >30 green
+  convTotal:   { low:3.5, high:6 },   // <3.5 red, 3.5-6 white, >6 green
+  convConexao: { low:5, high:10 },    // <5 red, 5-10 white, >10 green
+};
+
+function pctClass(key, val) {
+  if (val === null) return 'val-na';
+  const rule = PCT_RULES[key];
+  if (!rule) return '';
+  if (val < rule.low)  return 'pct-red';
+  if (val > rule.high) return 'pct-green';
+  return 'pct-white';
+}
+
+// ─── METRICS CONFIG ────────────────────────────────────
 const METRIC_COLORS = {
   chamados:'#E3001B', conectados:'#ff6b6b', vendas:'#22c55e',
   links:'#60a5fa', taxaConexao:'#f59e0b', convTotal:'#a78bfa',
@@ -433,34 +545,46 @@ const TABLE_COLS = [
   { key:'conectados',     label:'Conectados',     format:'num'  },
   { key:'links',          label:'Links',          format:'num'  },
   { key:'vendas',         label:'Vendas',         format:'num'  },
-  { key:'taxaConexao',    label:'Taxa Conexão',   format:'pct'  },
-  { key:'convTotal',      label:'Conv. Total',    format:'pct'  },
-  { key:'convConexao',    label:'Conv. Conexão',  format:'pct'  },
+  { key:'taxaConexao',    label:'Taxa Conexão',   format:'pct', colorKey:'taxaConexao' },
+  { key:'convTotal',      label:'Conv. Total',    format:'pct', colorKey:'convTotal'   },
+  { key:'convConexao',    label:'Conv. Conexão',  format:'pct', colorKey:'convConexao' },
   { key:'total',          label:'Todos',          format:'num'  },
   { key:'naoChamados',    label:'Não Chamados',   format:'num'  },
   { key:'semInteresse',   label:'Sem Interesse',  format:'num'  },
   { key:'transferencias', label:'Transferências', format:'num'  },
 ];
 
-// ════════════════════════════════════════════
+// Sales chart toggles
+const SALES_METRICS = [
+  { key:'faturamento', label:'Faturamento', color:'#22c55e', on:true,  yAxis:'yBRL'   },
+  { key:'quantidade',  label:'Nº Vendas',   color:'#E3001B', on:true,  yAxis:'yCount' },
+];
+const salesVis = {};
+SALES_METRICS.forEach(m => salesVis[m.key] = m.on);
+
+// ════════════════════════════════════════════════════════
 // FETCH
-// ════════════════════════════════════════════
+// ════════════════════════════════════════════════════════
 async function fetchData() {
+  // Try App Script first
   if (APP_SCRIPT_URL !== 'SEU_APP_SCRIPT_URL_AQUI') {
     try {
       const r = await fetch(APP_SCRIPT_URL);
-      if (r.ok) { allData = await r.json(); setStatus('online'); return; }
+      if (r.ok) { const json = await r.json(); allData = json.dados; allSales = json.vendas; setStatus('online'); return; }
     } catch(e) {}
   }
+  // CSV fallback for DADOS
   try {
-    const r = await fetch(CSV_URL);
-    if (!r.ok) throw new Error();
-    allData = parseCSV(await r.text());
+    const [rd, rv] = await Promise.all([fetch(CSV_DADOS_URL), fetch(CSV_VENDAS_URL)]);
+    if (!rd.ok) throw new Error('dados');
+    allData  = parseCSVDados(await rd.text());
+    allSales = rv.ok ? parseCSVVendas(await rv.text()) : [];
     setStatus('csv');
   } catch(e) { setStatus('error'); showError(); }
 }
 
-function parseCSV(text) {
+// ── DADOS parser ──
+function parseCSVDados(text) {
   const lines = text.split('\n').map(l=>l.replace(/\r/g,''));
   const out = [];
   for (let i=1;i<lines.length;i++) {
@@ -487,6 +611,42 @@ function parseCSV(text) {
   return out;
 }
 
+// ── VENDAS parser ──
+function parseCSVVendas(text) {
+  const lines = text.split('\n').map(l=>l.replace(/\r/g,''));
+  const out = [];
+  for (let i=1;i<lines.length;i++) {
+    const row = csvLine(lines[i]);
+    if (!row||row.length<2) continue;
+
+    // column: nome(0), telefone(1), dia_de_venda(2), momento(3), pipeline(4), produto(5), valor(6), venda(7)
+    const venda = (row[7]||'').replace(/"/g,'').trim().toLowerCase();
+    if (venda !== 'sim') continue;
+
+    const nome    = (row[0]||'').replace(/"/g,'').trim();
+    const produto = (row[5]||'').replace(/"/g,'').trim();
+    const rawDate = (row[2]||'').replace(/"/g,'').trim();
+    const rawVal  = (row[6]||'').replace(/"/g,'').replace('R$','').replace(/\s/g,'').trim();
+
+    // Normalize date — handles "2026-01-21T..." and "21/02/2026"
+    let dateStr = '';
+    if (/^\d{4}-\d{2}-\d{2}/.test(rawDate)) {
+      dateStr = rawDate.substring(0,10);
+    } else if (/^\d{2}\/\d{2}\/\d{4}/.test(rawDate)) {
+      const p = rawDate.split('/');
+      dateStr = `${p[2]}-${p[1]}-${p[0]}`;
+    } else { continue; }
+
+    const valor = parseFloat(rawVal.replace(',','.'));
+    if (!nome || !dateStr) continue;
+
+    out.push({ nome, produto, date: dateStr, valor: isNaN(valor) ? 0 : valor });
+  }
+  // Sort descending by date
+  out.sort((a,b) => b.date.localeCompare(a.date));
+  return out;
+}
+
 function csvLine(line) {
   const r=[]; let cur='',inQ=false;
   for(let i=0;i<line.length;i++){
@@ -496,9 +656,9 @@ function csvLine(line) {
   r.push(cur); return r;
 }
 
-// ════════════════════════════════════════════
+// ════════════════════════════════════════════════════════
 // UTILS
-// ════════════════════════════════════════════
+// ════════════════════════════════════════════════════════
 function setStatus(s) {
   const dot=document.getElementById('statusDot');
   const lbl=document.getElementById('statusLabel');
@@ -515,7 +675,7 @@ function showError() {
   document.getElementById('loadingOverlay').innerHTML=`
     <div class="error-box">
       <h3>ERRO AO CARREGAR</h3>
-      <p>Não foi possível buscar os dados.<br>Verifique se a planilha está publicada ou o App Script configurado.</p>
+      <p>Não foi possível buscar os dados. Verifique se a planilha está publicada.</p>
     </div>`;
 }
 
@@ -523,6 +683,12 @@ function getFiltered() {
   const from=document.getElementById('dateFrom').value;
   const to=document.getElementById('dateTo').value;
   return allData.filter(d=>(!from||d.date>=from)&&(!to||d.date<=to));
+}
+
+function getSalesFiltered() {
+  const from=document.getElementById('salesDateFrom').value;
+  const to=document.getElementById('salesDateTo').value;
+  return allSales.filter(s=>(!from||s.date>=from)&&(!to||s.date<=to));
 }
 
 function segData(row) { return row[seg]; }
@@ -535,7 +701,8 @@ function sum(rows,field) {
 
 const fN = v => v===null?null:Math.round(v).toLocaleString('pt-BR');
 const fP = v => v===null?null:v.toFixed(1)+'%';
-const fD = d => new Date(d+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit'});
+const fBRL = v => v===null?null:'R$ '+v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+const fD  = d => new Date(d+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit'});
 
 function aggregates(rows) {
   const total=sum(rows,'total'), naoChamados=sum(rows,'naoChamados'),
@@ -550,14 +717,23 @@ function aggregates(rows) {
   };
 }
 
-// ════════════════════════════════════════════
-// CARDS
-// ════════════════════════════════════════════
+// ════════════════════════════════════════════════════════
+// METRICS CARDS
+// ════════════════════════════════════════════════════════
 function buildCard(cfg, agg) {
   const v = agg[cfg.key];
   const isPct = cfg.format==='pct';
   const disp  = v===null ? null : isPct ? fP(v) : fN(v);
   const isHL  = ['chamados','conectados','vendas','taxaConexao','convTotal','convConexao'].includes(cfg.key);
+
+  // Color for rate cards based on rules
+  let rateClass = 'is-rate';
+  if (isPct && v !== null && PCT_RULES[cfg.key]) {
+    const rule = PCT_RULES[cfg.key];
+    if (v > rule.high) rateClass = 'is-green-rate';
+    else if (v < rule.low) rateClass = 'is-rate'; // red
+    else rateClass = 'is-rate-white';
+  }
 
   let note='';
   if(cfg.key==='transferencias') note=`<div class="card-note">⚠ Disponível a partir de Abril/2026</div>`;
@@ -567,7 +743,7 @@ function buildCard(cfg, agg) {
   el.innerHTML=`
     <span class="card-icon">${cfg.icon}</span>
     <div class="card-label">${cfg.label}</div>
-    <div class="card-value ${isPct?'is-rate':''} ${disp===null?'na':''}">${disp!==null?disp:'—'}</div>
+    <div class="card-value ${isPct ? rateClass : ''} ${disp===null?'na':''}">${disp!==null?disp:'—'}</div>
     ${v!==null&&!isPct?`<div class="card-sub">${Math.round(v).toLocaleString('pt-BR')} leads</div>`:''}
     ${note}
   `;
@@ -600,9 +776,9 @@ function renderCards(agg) {
   });
 }
 
-// ════════════════════════════════════════════
-// TABLE
-// ════════════════════════════════════════════
+// ════════════════════════════════════════════════════════
+// METRICS TABLE
+// ════════════════════════════════════════════════════════
 function renderTable(rows) {
   document.getElementById('tableHead').innerHTML=
     `<tr>${TABLE_COLS.map(c=>`<th>${c.label}</th>`).join('')}</tr>`;
@@ -615,18 +791,17 @@ function renderTable(rows) {
     const tx=d.chamados?(d.conectados||0)/d.chamados*100:null;
     const ct=d.chamados?(d.vendas||0)/d.chamados*100:null;
     const cc=d.conectados?(d.vendas||0)/d.conectados*100:null;
-    const rd={
-      date:row.date, chamados:d.chamados, conectados:d.conectados, links:d.links, vendas:d.vendas,
-      taxaConexao:tx, convTotal:ct, convConexao:cc,
-      total:d.total, naoChamados:d.naoChamados, semInteresse:d.semInteresse, transferencias:d.transferencias,
-    };
+    const rd={date:row.date,chamados:d.chamados,conectados:d.conectados,links:d.links,vendas:d.vendas,
+      taxaConexao:tx,convTotal:ct,convConexao:cc,total:d.total,naoChamados:d.naoChamados,
+      semInteresse:d.semInteresse,transferencias:d.transferencias};
+
     const tr=document.createElement('tr');
     tr.innerHTML=TABLE_COLS.map(col=>{
       const v=rd[col.key];
       if(col.key==='date') return `<td>${fD(v)}</td>`;
       if(v===null) return `<td class="val-na">—</td>`;
       if(col.format==='pct'){
-        const cls=v>=20?'val-green':v<5?'val-red':'';
+        const cls = col.colorKey ? pctClass(col.colorKey, v) : '';
         return `<td class="${cls}">${v.toFixed(1)}%</td>`;
       }
       const cls=col.key==='vendas'?'val-green':col.key==='chamados'?'val-red':'';
@@ -635,25 +810,26 @@ function renderTable(rows) {
     tbody.appendChild(tr);
   });
 
-  // Footer
   const agg=aggregates(rows);
-  const fd={
-    date:'TOTAL', chamados:agg.chamados, conectados:agg.conectados, links:agg.links, vendas:agg.vendas,
-    taxaConexao:agg.taxaConexao, convTotal:agg.convTotal, convConexao:agg.convConexao,
-    total:agg.total, naoChamados:agg.naoChamados, semInteresse:agg.semInteresse, transferencias:agg.transferencias,
-  };
+  const fd={date:'TOTAL',chamados:agg.chamados,conectados:agg.conectados,links:agg.links,vendas:agg.vendas,
+    taxaConexao:agg.taxaConexao,convTotal:agg.convTotal,convConexao:agg.convConexao,
+    total:agg.total,naoChamados:agg.naoChamados,semInteresse:agg.semInteresse,transferencias:agg.transferencias};
+
   document.getElementById('tableFoot').innerHTML=`<tr>${TABLE_COLS.map(col=>{
     const v=fd[col.key];
     if(col.key==='date') return `<td>TOTAL DO PERÍODO</td>`;
     if(v===null) return `<td>—</td>`;
-    if(col.format==='pct') return `<td>${v.toFixed(1)}%</td>`;
+    if(col.format==='pct'){
+      const cls = col.colorKey ? pctClass(col.colorKey, v) : '';
+      return `<td class="${cls}">${v.toFixed(1)}%</td>`;
+    }
     return `<td>${Math.round(v).toLocaleString('pt-BR')}</td>`;
   }).join('')}</tr>`;
 }
 
-// ════════════════════════════════════════════
-// CHART
-// ════════════════════════════════════════════
+// ════════════════════════════════════════════════════════
+// METRICS CHART
+// ════════════════════════════════════════════════════════
 function buildToggles() {
   const c=document.getElementById('chartToggles'); c.innerHTML='';
   METRICS_CONFIG.forEach(m=>{
@@ -694,8 +870,8 @@ function renderChart(rows) {
       plugins:{
         legend:{display:false},
         tooltip:{
-          backgroundColor:'#181818', borderColor:'#333', borderWidth:1,
-          titleColor:'#f0f0f0', bodyColor:'#aaa', padding:12,
+          backgroundColor:'#181818',borderColor:'#333',borderWidth:1,
+          titleColor:'#f0f0f0',bodyColor:'#aaa',padding:12,
           callbacks:{label:ctx=>{
             const m=METRICS_CONFIG.find(x=>x.label===ctx.dataset.label);
             const v=ctx.parsed.y; if(v===null||v===undefined) return ctx.dataset.label+': —';
@@ -712,9 +888,9 @@ function renderChart(rows) {
   });
 }
 
-// ════════════════════════════════════════════
+// ════════════════════════════════════════════════════════
 // FUNNEL
-// ════════════════════════════════════════════
+// ════════════════════════════════════════════════════════
 function renderFunnel(agg) {
   const steps=[
     {label:'Chamados',  value:agg.chamados},
@@ -741,53 +917,217 @@ function renderFunnel(agg) {
       </div>
       <div class="funnel-pct">${pct}</div>`;
     c.appendChild(el);
-    setTimeout(()=>el.querySelector('.funnel-bar-fill').style.width=rel, 50+i*80);
+    setTimeout(()=>el.querySelector('.funnel-bar-fill').style.width=rel,50+i*80);
   });
 }
 
-// ════════════════════════════════════════════
-// DEFAULT DATES — início do mês até hoje
-// ════════════════════════════════════════════
-function setDefaultDates() {
-  const now   = new Date();
-  const yyyy  = now.getFullYear();
-  const mm    = String(now.getMonth()+1).padStart(2,'0');
-  const dd    = String(now.getDate()).padStart(2,'0');
-  document.getElementById('dateFrom').value = `${yyyy}-${mm}-01`;
-  document.getElementById('dateTo').value   = `${yyyy}-${mm}-${dd}`;
+// ════════════════════════════════════════════════════════
+// SALES PAGE
+// ════════════════════════════════════════════════════════
+function renderSalesPage() {
+  const rows = getSalesFiltered();
+
+  const totalFat  = rows.reduce((s,r) => s + r.valor, 0);
+  const totalQty  = rows.length;
+  const avgTicket = totalQty > 0 ? totalFat / totalQty : 0;
+
+  // ── Cards ──
+  document.getElementById('salesCards').innerHTML = `
+    <div class="sales-card s-revenue">
+      <span class="sc-icon">💵</span>
+      <div class="sc-label">Faturamento</div>
+      <div class="sc-value green">${fBRL(totalFat)}</div>
+      <div class="sc-sub">${totalQty} venda${totalQty!==1?'s':''} no período</div>
+    </div>
+    <div class="sales-card s-count">
+      <span class="sc-icon">🛒</span>
+      <div class="sc-label">Número de Vendas</div>
+      <div class="sc-value">${totalQty.toLocaleString('pt-BR')}</div>
+      <div class="sc-sub">somente registros confirmados</div>
+    </div>
+    <div class="sales-card s-ticket">
+      <span class="sc-icon">🏷️</span>
+      <div class="sc-label">Ticket Médio</div>
+      <div class="sc-value amber">${fBRL(avgTicket)}</div>
+      <div class="sc-sub">faturamento ÷ vendas</div>
+    </div>
+  `;
+
+  // ── Line chart ──
+  renderSalesChart(rows);
+
+  // ── Table ──
+  document.getElementById('salesTableHead').innerHTML = `
+    <tr>
+      <th>Data</th>
+      <th>Nome</th>
+      <th>Produto</th>
+      <th>Valor</th>
+    </tr>`;
+
+  const tbody = document.getElementById('salesTableBody');
+  tbody.innerHTML = '';
+
+  if (!rows.length) {
+    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:32px;font-family:'JetBrains Mono',monospace;">Nenhuma venda no período selecionado.</td></tr>`;
+  } else {
+    rows.forEach(r => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td class="td-date">${fD(r.date)}</td>
+        <td class="td-name">${r.nome}</td>
+        <td class="td-prod">${r.produto}</td>
+        <td class="td-val">${r.valor > 0 ? fBRL(r.valor) : '—'}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  document.getElementById('salesTableFoot').innerHTML = `
+    <tr>
+      <td class="tf-label" colspan="3">TOTAL DO PERÍODO</td>
+      <td class="tf-val">${fBRL(totalFat)}</td>
+    </tr>`;
 }
 
-// ════════════════════════════════════════════
-// REFRESH & VIEW SWITCH
-// ════════════════════════════════════════════
+// ── Sales chart ──
+function buildSalesChartToggles() {
+  const c = document.getElementById('salesChartToggles'); c.innerHTML='';
+  SALES_METRICS.forEach(m => {
+    const on = salesVis[m.key];
+    const btn = document.createElement('div');
+    btn.className = 'metric-toggle'+(on?' active':'');
+    btn.style.cssText = on?`background:${m.color}22;border-color:${m.color};color:#fff;`:'';
+    btn.innerHTML = `<span class="dot" style="background:${m.color}"></span>${m.label}`;
+    btn.addEventListener('click',()=>{ salesVis[m.key]=!salesVis[m.key]; renderSalesChart(getSalesFiltered()); });
+    c.appendChild(btn);
+  });
+}
+
+function renderSalesChart(rows) {
+  buildSalesChartToggles();
+
+  // Group by date
+  const byDate = {};
+  rows.forEach(r => {
+    if (!byDate[r.date]) byDate[r.date] = {faturamento:0, quantidade:0};
+    byDate[r.date].faturamento += r.valor;
+    byDate[r.date].quantidade  += 1;
+  });
+
+  // All unique dates sorted asc
+  const dates = Object.keys(byDate).sort();
+  const labels = dates.map(d => fD(d));
+
+  const datasets = SALES_METRICS.filter(m=>salesVis[m.key]).map(m=>({
+    label: m.label,
+    data: dates.map(d => byDate[d][m.key]),
+    borderColor: m.color,
+    backgroundColor: m.color+'18',
+    borderWidth: 2,
+    pointRadius: dates.length > 60 ? 0 : 4,
+    pointHoverRadius: 6,
+    tension: 0.35, fill: false,
+    yAxisID: m.yAxis,
+    spanGaps: true,
+  }));
+
+  if(salesChart) salesChart.destroy();
+  salesChart = new Chart(document.getElementById('salesLineChart').getContext('2d'),{
+    type:'line', data:{labels,datasets},
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          backgroundColor:'#181818',borderColor:'#333',borderWidth:1,
+          titleColor:'#f0f0f0',bodyColor:'#aaa',padding:12,
+          callbacks:{label:ctx=>{
+            const m=SALES_METRICS.find(x=>x.label===ctx.dataset.label);
+            const v=ctx.parsed.y;
+            if(m?.key==='faturamento') return 'Faturamento: '+fBRL(v);
+            return 'Nº Vendas: '+Math.round(v);
+          }}
+        }
+      },
+      scales:{
+        x:{ticks:{color:'#555',font:{family:'JetBrains Mono',size:10},maxTicksLimit:15},grid:{color:'rgba(255,255,255,0.04)'}},
+        yBRL:{
+          type:'linear', position:'left',
+          ticks:{color:'#22c55e',font:{family:'JetBrains Mono',size:10},callback:v=>'R$ '+v.toLocaleString('pt-BR',{minimumFractionDigits:0})},
+          grid:{color:'rgba(255,255,255,0.04)'},
+        },
+        yCount:{
+          type:'linear', position:'right',
+          ticks:{color:'#E3001B',font:{family:'JetBrains Mono',size:10},callback:v=>Math.round(v)},
+          grid:{drawOnChartArea:false},
+        },
+      }
+    }
+  });
+}
+
+// ════════════════════════════════════════════════════════
+// DEFAULT DATES
+// ════════════════════════════════════════════════════════
+function setDefaultDates() {
+  const now  = new Date();
+  const yyyy = now.getFullYear();
+  const mm   = String(now.getMonth()+1).padStart(2,'0');
+  const dd   = String(now.getDate()).padStart(2,'0');
+  document.getElementById('dateFrom').value     = `${yyyy}-${mm}-01`;
+  document.getElementById('dateTo').value       = `${yyyy}-${mm}-${dd}`;
+  document.getElementById('salesDateFrom').value = `${yyyy}-${mm}-01`;
+  document.getElementById('salesDateTo').value   = `${yyyy}-${mm}-${dd}`;
+}
+
+// ════════════════════════════════════════════════════════
+// REFRESH
+// ════════════════════════════════════════════════════════
 function refresh() {
-  const rows=getFiltered();
-  const agg=aggregates(rows);
-  if(viewMode==='cards') {
-    renderCards(agg);
-    renderChart(rows);
-    renderFunnel(agg);
+  if (activePage === 'metrics') {
+    const rows=getFiltered();
+    const agg=aggregates(rows);
+    if(viewMode==='cards') { renderCards(agg); renderChart(rows); renderFunnel(agg); }
+    else { renderTable(rows); }
   } else {
-    renderTable(rows);
+    renderSalesPage();
   }
 }
 
 function switchView(mode) {
   viewMode=mode;
-  document.getElementById('cardsView').style.display = mode==='cards'?'':'none';
-  document.getElementById('tableView').classList.toggle('visible', mode==='table');
-  document.getElementById('btnViewCards').classList.toggle('active', mode==='cards');
-  document.getElementById('btnViewTable').classList.toggle('active', mode==='table');
+  document.getElementById('cardsView').style.display   = mode==='cards'?'':'none';
+  document.getElementById('tableView').style.display   = mode==='table'?'':'none';
+  document.getElementById('btnViewCards').classList.toggle('active',mode==='cards');
+  document.getElementById('btnViewTable').classList.toggle('active',mode==='table');
   refresh();
 }
 
-// ════════════════════════════════════════════
+function switchPage(page) {
+  activePage = page;
+  document.querySelectorAll('.top-tab').forEach(t=>t.classList.toggle('active',t.dataset.page===page));
+  document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id==='page'+capitalize(page)));
+
+  // Show/hide relevant controls
+  document.getElementById('segTabsWrap').style.display    = page==='metrics'?'':'none';
+  document.getElementById('viewToggleWrap').style.display = page==='metrics'?'':'none';
+  document.getElementById('dateFrom').closest('.date-group').style.display    = page==='metrics'?'':'none';
+  document.getElementById('salesDateGroup').style.display = page==='sales'?'':'none';
+
+  refresh();
+}
+
+function capitalize(s) { return s.charAt(0).toUpperCase()+s.slice(1); }
+
+// ════════════════════════════════════════════════════════
 // INIT
-// ════════════════════════════════════════════
+// ════════════════════════════════════════════════════════
 async function init() {
   await fetchData();
   document.getElementById('loadingOverlay').style.display='none';
-  if(!allData.length){showError();return;}
+  if(!allData.length && !allSales.length){showError();return;}
 
   setDefaultDates();
 
@@ -795,17 +1135,20 @@ async function init() {
   document.querySelectorAll('.seg-tab').forEach(btn=>{
     btn.addEventListener('click',()=>{
       document.querySelectorAll('.seg-tab').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');
-      seg=btn.dataset.seg;
-      refresh();
+      btn.classList.add('active'); seg=btn.dataset.seg; refresh();
     });
   });
 
-  // View buttons
+  // Top nav
+  document.querySelectorAll('.top-tab').forEach(btn=>{
+    btn.addEventListener('click',()=>switchPage(btn.dataset.page));
+  });
+
+  // View toggle
   document.getElementById('btnViewCards').addEventListener('click',()=>switchView('cards'));
   document.getElementById('btnViewTable').addEventListener('click',()=>switchView('table'));
 
-  // Secondary cards toggle — mantém ordem, só mostra/oculta
+  // Secondary cards toggle
   document.getElementById('btnToggleSecondary').addEventListener('click',()=>{
     showSecondary=!showSecondary;
     document.getElementById('secondaryBlock').classList.toggle('visible',showSecondary);
@@ -813,8 +1156,9 @@ async function init() {
     document.getElementById('lblSecondary').textContent=showSecondary?'Ocultar dados secundários':'Ver dados secundários';
   });
 
-  // Apply date range
+  // Date apply buttons
   document.getElementById('btnApply').addEventListener('click',refresh);
+  document.getElementById('btnSalesApply').addEventListener('click',refresh);
 
   refresh();
 }
