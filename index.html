@@ -553,6 +553,23 @@ function aggregates(rows) {
 // ════════════════════════════════════════════
 // CARDS
 // ════════════════════════════════════════════
+// ── Regras de cor para porcentagens ──────────────────────────
+function getPctColor(key, value) {
+  const rules = {
+    taxaConexao: { low: 20, high: 30 },   // <20 vermelho | 20–30 branco | >30 verde
+    convTotal:   { low: 3.5, high: 6 },   // <3.5 vermelho | 3.5–6 branco | >6 verde
+    convConexao: { low: 5, high: 10 },    // <5 vermelho | 5–10 branco | >10 verde
+  };
+
+  const rule = rules[key];
+  if (!rule) return '';
+
+  if (value < rule.low)       return 'color: var(--red);';
+  if (value > rule.high)      return 'color: var(--green);';
+  return 'color: var(--text);';  // branco (neutro)
+}
+  
+  
 function buildCard(cfg, agg) {
   const v = agg[cfg.key];
   const isPct = cfg.format==='pct';
@@ -562,12 +579,18 @@ function buildCard(cfg, agg) {
   let note='';
   if(cfg.key==='transferencias') note=`<div class="card-note">⚠ Disponível a partir de Abril/2026</div>`;
 
+  // ── Cor da porcentagem ──
+  let pctColor = '';
+  if (isPct && v !== null) {
+    pctColor = getPctColor(cfg.key, v);
+  }
+
   const el=document.createElement('div');
   el.className='card'+(isHL?' highlight':'');
   el.innerHTML=`
     <span class="card-icon">${cfg.icon}</span>
     <div class="card-label">${cfg.label}</div>
-    <div class="card-value ${isPct?'is-rate':''} ${disp===null?'na':''}">${disp!==null?disp:'—'}</div>
+    <div class="card-value ${isPct?'is-rate':''} ${disp===null?'na':''}" style="${pctColor}">${disp!==null?disp:'—'}</div>
     ${v!==null&&!isPct?`<div class="card-sub">${Math.round(v).toLocaleString('pt-BR')} leads</div>`:''}
     ${note}
   `;
@@ -626,9 +649,10 @@ function renderTable(rows) {
       if(col.key==='date') return `<td>${fD(v)}</td>`;
       if(v===null) return `<td class="val-na">—</td>`;
       if(col.format==='pct'){
-        const cls=v>=20?'val-green':v<5?'val-red':'';
-        return `<td class="${cls}">${v.toFixed(1)}%</td>`;
-      }
+  const pctStyle = getPctColor(col.key, v);
+  const styleAttr = pctStyle ? `style="${pctStyle}"` : '';
+  return `<td ${styleAttr}>${v.toFixed(1)}%</td>`;
+}
       const cls=col.key==='vendas'?'val-green':col.key==='chamados'?'val-red':'';
       return `<td class="${cls}">${Math.round(v).toLocaleString('pt-BR')}</td>`;
     }).join('');
