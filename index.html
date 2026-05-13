@@ -428,7 +428,6 @@
 // ════════════════════════════════════════════
 // CONFIG
 // ════════════════════════════════════════════
-const APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxBoesSkxWCPatXXwUaPxYE8ugcfknJ3vKGZgZTVEG97TdljMYt9CvUtIOy7VXvDlZoLA/exec';
 const SHEET_ID   = '131kOelD9Uzr3SzgFdvRKBHM3Wc25QmkIo7tTHlw1ADw';
 const CSV_DADOS  = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=DADOS`;
 const CSV_VENDAS = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=VENDAS`;
@@ -610,7 +609,7 @@ function parseCSVVendas(text) {
       continue;
     }
 
-    const valor = parseFloat(valorRaw.replace(/\./g,'').replace(',','.'));
+    const valor = parseFloat(valorRaw.replace(',','.'));
     if (isNaN(valor) || valor <= 0) continue;
 
     // Detecta segmento pela coluna Pipeline (E)
