@@ -440,8 +440,8 @@
 // CONFIG
 // ════════════════════════════════════════════
 const SHEET_ID       = '131kOelD9Uzr3SzgFdvRKBHM3Wc25QmkIo7tTHlw1ADw';
-const CSV_DADOS      = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=DADOS`;
 const APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzxLTcpOZKtGtealyrizKR7doym-NPZS4O0xiaZb1iK8Q8CcC2l0uqzoJcRh_xSXLD2/exec';
+const CSV_DADOS      = APP_SCRIPT_URL;
 const CSV_VENDAS     = `${APP_SCRIPT_URL}?sheet=vendas`;
 
 // ════════════════════════════════════════════
@@ -535,7 +535,7 @@ async function fetchData() {
   try {
     const r = await fetch(CSV_DADOS);
     if (!r.ok) throw new Error();
-    allData = parseCSVDados(await r.text());
+    allData = await r.json();
     setStatus('csv');
   } catch(e) {
     setStatus('error');
