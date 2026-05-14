@@ -439,9 +439,10 @@
 // ════════════════════════════════════════════
 // CONFIG
 // ════════════════════════════════════════════
-const SHEET_ID   = '131kOelD9Uzr3SzgFdvRKBHM3Wc25QmkIo7tTHlw1ADw';
-const CSV_DADOS  = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=DADOS`;
-const CSV_VENDAS = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=VENDAS`;
+const SHEET_ID       = '131kOelD9Uzr3SzgFdvRKBHM3Wc25QmkIo7tTHlw1ADw';
+const CSV_DADOS      = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=DADOS`;
+const APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzxLTcpOZKtGtealyrizKR7doym-NPZS4O0xiaZb1iK8Q8CcC2l0uqzoJcRh_xSXLD2/exec';
+const CSV_VENDAS     = `${APP_SCRIPT_URL}?sheet=vendas`;
 
 // ════════════════════════════════════════════
 // STATE
@@ -576,10 +577,10 @@ async function fetchVendas() {
   try {
     const r = await fetch(CSV_VENDAS);
     if (!r.ok) throw new Error();
-    vendasData = parseCSVVendas(await r.text());
+    vendasData = await r.json();
   } catch(e) {
     vendasData = [];
-    console.warn('Aba VENDAS não encontrada ou erro ao carregar.');
+    console.warn('Erro ao carregar vendas do Apps Script.');
   }
 }
 
