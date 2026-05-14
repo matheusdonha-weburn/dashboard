@@ -70,6 +70,20 @@
 
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
 
+  /* ── GLOBAL DATE BAR — sempre visível, acima das tabs ── */
+  .global-date-bar {
+    position: relative; z-index: 11;
+    padding: 10px 40px;
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+  }
+
+  .global-date-bar .date-label {
+    font-size: 11px; color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace; letter-spacing: 1px;
+  }
+
   /* ── MAIN TABS ── */
   .main-tabs {
     position: relative; z-index: 10;
@@ -90,7 +104,7 @@
   .main-tab:hover { color: var(--text); }
   .main-tab.active { color: var(--text); border-bottom-color: var(--red); }
 
-  /* ── CONTROLS ── */
+  /* ── CONTROLS (segmentos + view — sem datas) ── */
   .controls {
     position: relative; z-index: 10;
     padding: 14px 40px;
@@ -130,7 +144,7 @@
   .view-btn:hover { color: var(--text); background: var(--surface3); }
   .view-btn.active { background: var(--surface3); color: var(--text); border-color: var(--border-red); }
 
-  .date-group { display: flex; align-items: center; gap: 8px; margin-left: auto; flex-wrap: wrap; }
+  .date-group { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
   .date-label { font-size: 11px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace; letter-spacing: 1px; }
 
   input[type="date"] {
@@ -269,9 +283,8 @@
   .empty-state { padding: 40px; text-align: center; color: var(--text-muted); font-size: 13px; font-family: 'JetBrains Mono', monospace; }
 
   @media (max-width: 768px) {
-    header, .controls, main { padding-left: 16px; padding-right: 16px; }
+    header, .global-date-bar, .controls, main { padding-left: 16px; padding-right: 16px; }
     .main-tabs { padding-left: 16px; }
-    .date-group { margin-left: 0; width: 100%; }
     .cards-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
     .vendas-cards-grid { grid-template-columns: 1fr 1fr; }
   }
@@ -295,13 +308,25 @@
   </div>
 </header>
 
+<!-- ── FILTRO DE DATA GLOBAL — compartilhado entre todas as abas ── -->
+<div class="global-date-bar">
+  <span class="date-label">PERÍODO</span>
+  <div class="date-group">
+    <span class="date-label">DE</span>
+    <input type="date" id="dateFrom"/>
+    <span class="date-label">ATÉ</span>
+    <input type="date" id="dateTo"/>
+    <button class="btn-apply" id="btnApply">APLICAR</button>
+  </div>
+</div>
+
 <!-- ── MAIN TABS ── -->
 <div class="main-tabs">
   <button class="main-tab active" data-page="metricas">📊 MÉTRICAS</button>
   <button class="main-tab" data-page="vendas">💰 VENDAS</button>
 </div>
 
-<!-- ── MÉTRICAS CONTROLS ── -->
+<!-- ── MÉTRICAS CONTROLS (segmentos + view toggle) ── -->
 <div id="metricasControls">
   <div class="controls">
     <div class="seg-tabs">
@@ -320,17 +345,10 @@
         Tabela
       </button>
     </div>
-    <div class="date-group">
-      <span class="date-label">DE</span>
-      <input type="date" id="dateFrom"/>
-      <span class="date-label">ATÉ</span>
-      <input type="date" id="dateTo"/>
-      <button class="btn-apply" id="btnApply">APLICAR</button>
-    </div>
   </div>
 </div>
 
-<!-- ── VENDAS CONTROLS ── -->
+<!-- ── VENDAS CONTROLS (apenas segmentos) ── -->
 <div id="vendasControls" style="display:none;">
   <div class="controls">
     <div class="seg-tabs">
@@ -338,13 +356,6 @@
       <button class="seg-tab" data-vseg="mkt">MKT</button>
       <button class="seg-tab" data-vseg="webhook">WEBHOOK</button>
       <button class="seg-tab" data-vseg="assinatura">ASSINATURAS</button>
-    </div>
-    <div class="date-group">
-      <span class="date-label">DE</span>
-      <input type="date" id="vDateFrom"/>
-      <span class="date-label">ATÉ</span>
-      <input type="date" id="vDateTo"/>
-      <button class="btn-apply" id="btnVApply">APLICAR</button>
     </div>
   </div>
 </div>
@@ -560,7 +571,6 @@ function parseCSVDados(text) {
 
 // ════════════════════════════════════════════
 // FETCH — VENDAS
-// Colunas: A=0 Nome, B=1 Tel, C=2 Data, E=4 Pipeline, F=5 Produto, G=6 Valor, H=7 Venda
 // ════════════════════════════════════════════
 async function fetchVendas() {
   try {
@@ -587,10 +597,8 @@ function parseCSVVendas(text) {
     const valorRaw = clean(row[6]);
     const venda    = clean(row[7]).toLowerCase();
 
-    // Filtra apenas vendas confirmadas
     if (venda !== 'sim') continue;
 
-    // Parse date — suporta DD/MM/YYYY, YYYY-MM-DD e serial Excel
     let date = '';
     if (/^\d{4}-\d{2}-\d{2}/.test(diaRaw)) {
       date = diaRaw.substring(0,10);
@@ -612,7 +620,6 @@ function parseCSVVendas(text) {
     const valor = parseFloat(valorRaw.replace(',','.'));
     if (isNaN(valor) || valor <= 0) continue;
 
-    // Detecta segmento pela coluna Pipeline (E)
     let segmento = 'mkt';
     const pip = pipeline.toLowerCase();
     if (pip.includes('webhook')) segmento = 'webhook';
@@ -660,6 +667,7 @@ function showError() {
     </div>`;
 }
 
+// ── Filtros — ambas as abas leem os MESMOS inputs ──
 function getFiltered() {
   const from = document.getElementById('dateFrom').value;
   const to   = document.getElementById('dateTo').value;
@@ -667,8 +675,8 @@ function getFiltered() {
 }
 
 function getVendasFiltered() {
-  const from = document.getElementById('vDateFrom').value;
-  const to   = document.getElementById('vDateTo').value;
+  const from = document.getElementById('dateFrom').value;
+  const to   = document.getElementById('dateTo').value;
   let rows = vendasData.filter(d => (!from||d.date>=from) && (!to||d.date<=to));
   if (vSeg !== 'todos') rows = rows.filter(d => d.segmento === vSeg);
   return rows;
@@ -705,12 +713,8 @@ function setDefaultDates() {
   const yyyy = now.getFullYear();
   const mm   = String(now.getMonth()+1).padStart(2,'0');
   const dd   = String(now.getDate()).padStart(2,'0');
-  const first = `${yyyy}-${mm}-01`;
-  const today = `${yyyy}-${mm}-${dd}`;
-  document.getElementById('dateFrom').value  = first;
-  document.getElementById('dateTo').value    = today;
-  document.getElementById('vDateFrom').value = first;
-  document.getElementById('vDateTo').value   = today;
+  document.getElementById('dateFrom').value = `${yyyy}-${mm}-01`;
+  document.getElementById('dateTo').value   = `${yyyy}-${mm}-${dd}`;
 }
 
 // ════════════════════════════════════════════
@@ -939,7 +943,7 @@ function renderVendasCards(rows) {
 }
 
 // ════════════════════════════════════════════
-// VENDAS — CHART (2 linhas, 2 eixos Y)
+// VENDAS — CHART
 // ════════════════════════════════════════════
 function renderVendasChart(rows) {
   const byDate = {};
@@ -955,7 +959,6 @@ function renderVendasChart(rows) {
   const cntData = dates.map(d => byDate[d].count);
 
   if (vendasChart) vendasChart.destroy();
-
   if (!dates.length) return;
 
   vendasChart = new Chart(document.getElementById('vendasChart').getContext('2d'), {
@@ -981,41 +984,22 @@ function renderVendasChart(rows) {
       responsive:true, maintainAspectRatio:false,
       interaction:{mode:'index', intersect:false},
       plugins:{
-        legend:{
-          display:true,
-          labels:{color:'#888', font:{family:'JetBrains Mono', size:11}, boxWidth:12, padding:16}
-        },
+        legend:{display:true, labels:{color:'#888', font:{family:'JetBrains Mono',size:11}, boxWidth:12, padding:16}},
         tooltip:{
           backgroundColor:'#181818', borderColor:'#333', borderWidth:1,
           titleColor:'#f0f0f0', bodyColor:'#aaa', padding:12,
-          callbacks:{
-            label:ctx => {
-              const v = ctx.parsed.y;
-              if (ctx.dataset.label==='Faturamento (R$)')
-                return 'Faturamento: ' + v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-              return 'Vendas: ' + Math.round(v);
-            }
-          }
+          callbacks:{label:ctx => {
+            const v = ctx.parsed.y;
+            if (ctx.dataset.label==='Faturamento (R$)')
+              return 'Faturamento: '+v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+            return 'Vendas: '+Math.round(v);
+          }}
         }
       },
       scales:{
-        x:{
-          ticks:{color:'#555', font:{family:'JetBrains Mono',size:10}, maxTicksLimit:15},
-          grid:{color:'rgba(255,255,255,0.04)'}
-        },
-        yFat:{
-          type:'linear', position:'left',
-          ticks:{
-            color:'#22c55e', font:{family:'JetBrains Mono',size:10},
-            callback: v => 'R$ '+v.toLocaleString('pt-BR',{minimumFractionDigits:0})
-          },
-          grid:{color:'rgba(255,255,255,0.04)'}
-        },
-        yCnt:{
-          type:'linear', position:'right',
-          ticks:{color:'#E3001B', font:{family:'JetBrains Mono',size:10}, callback:v=>Math.round(v)},
-          grid:{drawOnChartArea:false}
-        },
+        x:{ticks:{color:'#555',font:{family:'JetBrains Mono',size:10},maxTicksLimit:15},grid:{color:'rgba(255,255,255,0.04)'}},
+        yFat:{type:'linear',position:'left',ticks:{color:'#22c55e',font:{family:'JetBrains Mono',size:10},callback:v=>'R$ '+v.toLocaleString('pt-BR',{minimumFractionDigits:0})},grid:{color:'rgba(255,255,255,0.04)'}},
+        yCnt:{type:'linear',position:'right',ticks:{color:'#E3001B',font:{family:'JetBrains Mono',size:10},callback:v=>Math.round(v)},grid:{drawOnChartArea:false}},
       }
     }
   });
@@ -1030,10 +1014,7 @@ function renderVendasTable(rows) {
 
   document.getElementById('vendasTableHead').innerHTML = `
     <tr>
-      <th>Data</th>
-      <th>Nome</th>
-      <th>Produto</th>
-      <th>Segmento</th>
+      <th>Data</th><th>Nome</th><th>Produto</th><th>Segmento</th>
       <th style="text-align:right;">Valor</th>
     </tr>`;
 
@@ -1046,17 +1027,15 @@ function renderVendasTable(rows) {
     return;
   }
 
-  // Mais recente primeiro
   const sorted = [...rows].sort((a,b) => b.date.localeCompare(a.date));
-
   sorted.forEach(r => {
-    const sc  = SEG_CLASS[r.segmento] || 'mkt';
-    const sl  = SEG_LABEL[r.segmento] || 'MKT';
-    const tr  = document.createElement('tr');
+    const sc = SEG_CLASS[r.segmento] || 'mkt';
+    const sl = SEG_LABEL[r.segmento] || 'MKT';
+    const tr = document.createElement('tr');
     tr.innerHTML = `
       <td>${fD(r.date)}</td>
-      <td>${r.nome || '—'}</td>
-      <td>${r.produto || '—'}</td>
+      <td>${r.nome||'—'}</td>
+      <td>${r.produto||'—'}</td>
       <td><span class="seg-badge ${sc}">${sl}</span></td>
       <td style="text-align:right;" class="val-green">${fBRL(r.valor)}</td>
     `;
@@ -1094,6 +1073,11 @@ function refreshVendas() {
   renderVendasTable(rows);
 }
 
+function refreshAll() {
+  if (activePage === 'metricas') refreshMetricas();
+  else refreshVendas();
+}
+
 function switchView(mode) {
   viewMode = mode;
   document.getElementById('cardsView').style.display  = mode==='cards' ? '' : 'none';
@@ -1123,12 +1107,10 @@ async function init() {
 
   setDefaultDates();
 
-  // Main tabs
   document.querySelectorAll('.main-tab').forEach(btn => {
     btn.addEventListener('click', () => switchPage(btn.dataset.page));
   });
 
-  // Segment tabs — métricas
   document.querySelectorAll('.seg-tab[data-seg]').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.seg-tab[data-seg]').forEach(b => b.classList.remove('active'));
@@ -1138,7 +1120,6 @@ async function init() {
     });
   });
 
-  // Segment tabs — vendas
   document.querySelectorAll('.seg-tab[data-vseg]').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.seg-tab[data-vseg]').forEach(b => b.classList.remove('active'));
@@ -1148,11 +1129,9 @@ async function init() {
     });
   });
 
-  // View buttons
   document.getElementById('btnViewCards').addEventListener('click', () => switchView('cards'));
   document.getElementById('btnViewTable').addEventListener('click', () => switchView('table'));
 
-  // Secondary toggle
   document.getElementById('btnToggleSecondary').addEventListener('click', () => {
     showSecondary = !showSecondary;
     document.getElementById('secondaryBlock').classList.toggle('visible', showSecondary);
@@ -1160,9 +1139,8 @@ async function init() {
     document.getElementById('lblSecondary').textContent = showSecondary ? 'Ocultar dados secundários' : 'Ver dados secundários';
   });
 
-  // Apply buttons
-  document.getElementById('btnApply').addEventListener('click', refreshMetricas);
-  document.getElementById('btnVApply').addEventListener('click', refreshVendas);
+  // Um único botão APLICAR para ambas as abas
+  document.getElementById('btnApply').addEventListener('click', refreshAll);
 
   refreshMetricas();
 }
