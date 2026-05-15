@@ -68,7 +68,22 @@
   .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--text-muted); }
   .status-label { font-size: 11px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace; letter-spacing: 1px; }
 
+  /* ── BOTÃO SYNC ── */
+  .btn-sync {
+    display: flex; align-items: center; gap: 7px;
+    padding: 8px 16px; border-radius: 8px;
+    border: 1px solid var(--border); background: var(--surface2);
+    color: var(--text-dim); font-family: 'DM Sans', sans-serif;
+    font-size: 12px; font-weight: 600; cursor: pointer;
+    transition: all 0.2s; letter-spacing: 0.5px;
+  }
+  .btn-sync:hover { border-color: var(--border-red); color: var(--text); background: rgba(227,0,27,0.08); }
+  .btn-sync.loading { opacity: 0.6; pointer-events: none; }
+  .btn-sync.loading svg { animation: spin 0.8s linear infinite; }
+  .btn-sync.success { border-color: rgba(34,197,94,0.5); color: var(--green); background: rgba(34,197,94,0.06); }
+
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+  @keyframes spin  { to { transform: rotate(360deg); } }
 
   /* ── GLOBAL DATE BAR ── */
   .global-date-bar {
@@ -164,7 +179,7 @@
   }
   .btn-apply:hover { background: var(--red-dark); transform: translateY(-1px); }
 
-  /* ── SUB-TABS DE FUNIL (dentro de MKT) ── */
+  /* ── SUB-TABS DE FUNIL ── */
   .funil-bar {
     position: relative; z-index: 9;
     padding: 0 40px;
@@ -195,10 +210,7 @@
   .funil-tab.funil-todos.active { color: var(--text); border-bottom-color: var(--text-dim); }
 
   /* ── TOOLTIP (?) ── */
-  .info-wrap {
-    position: relative;
-    display: inline-flex; align-items: center;
-  }
+  .info-wrap { position: relative; display: inline-flex; align-items: center; }
 
   .info-btn {
     width: 12px; height: 12px; border-radius: 50%;
@@ -228,7 +240,6 @@
     pointer-events: none;
     box-shadow: 0 8px 32px rgba(0,0,0,0.6);
   }
-  /* seta aponta para cima */
   .info-tooltip::after {
     content: '';
     position: absolute;
@@ -246,28 +257,14 @@
 
   .info-wrap:hover .info-tooltip { display: block; }
 
-  /* nas tabs — centraliza horizontalmente sob o ? */
-  .tab-tooltip {
-    left: 50%; transform: translateX(-50%);
-  }
+  .tab-tooltip { left: 50%; transform: translateX(-50%); }
   .tab-tooltip::after { left: 50%; transform: translateX(-50%); }
 
-  /* MKT fica muito à esquerda — abre para a direita */
-  .tab-tooltip-right {
-    left: 0; transform: none;
-  }
+  .tab-tooltip-right { left: 0; transform: none; }
   .tab-tooltip-right::after { left: 14px; transform: none; }
 
-  /* nos cards — ? fica no canto sup-dir */
-  .card-info-wrap {
-    position: absolute;
-    top: 14px; right: 14px;
-    z-index: 10;
-  }
-  .card-tooltip {
-    left: auto; right: 0; transform: none;
-    width: 220px;
-  }
+  .card-info-wrap { position: absolute; top: 14px; right: 14px; z-index: 10; }
+  .card-tooltip { left: auto; right: 0; transform: none; width: 220px; }
   .card-tooltip::after { left: auto; right: 14px; transform: none; }
 
   /* ── MAIN ── */
@@ -378,11 +375,10 @@
   .seg-badge.webhook    { background: rgba(96,165,250,0.15); color: #60a5fa; }
   .seg-badge.assinatura { background: rgba(167,139,250,0.15); color: #a78bfa; }
 
-  /* ── FUNIL VIEW (dentro de MKT) ── */
+  /* ── FUNIL VIEW ── */
   #funilView { display: none; }
   #funilView.visible { display: flex; flex-direction: column; gap: 26px; }
 
-  /* badge do funil ativo */
   .funil-header-badge {
     display: inline-flex; align-items: center; gap: 8px;
     background: rgba(227,0,27,0.1); border: 1px solid var(--border-red);
@@ -391,40 +387,33 @@
     letter-spacing: 1px; text-transform: uppercase;
   }
 
-  /* comparativo de funis (quando "TODOS" selecionado em MKT + funil) */
-  .funil-compare-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 14px;
-  }
-
-  .funil-compare-card {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 14px; padding: 18px; position: relative;
-    transition: border-color 0.2s, transform 0.2s;
-  }
+  .funil-compare-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+  .funil-compare-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 18px; position: relative; transition: border-color 0.2s, transform 0.2s; }
   .funil-compare-card:hover { border-color: var(--border-red); transform: translateY(-2px); }
-  .funil-compare-card .fc-name {
-    font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 2px;
-    color: var(--red); margin-bottom: 12px;
-    border-bottom: 1px solid var(--border); padding-bottom: 10px;
-  }
-  .funil-compare-card .fc-row {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.04);
-  }
+  .funil-compare-card .fc-name { font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 2px; color: var(--red); margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+  .funil-compare-card .fc-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
   .funil-compare-card .fc-row:last-child { border-bottom: none; }
-  .funil-compare-card .fc-lbl {
-    font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px;
+  .funil-compare-card .fc-lbl { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
+  .funil-compare-card .fc-val { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 600; color: var(--text); }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed; bottom: 28px; right: 28px; z-index: 2000;
+    display: flex; align-items: center; gap: 10px;
+    padding: 13px 20px; border-radius: 12px;
+    font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    transform: translateY(20px); opacity: 0;
+    transition: all 0.3s cubic-bezier(.34,1.56,.64,1);
+    pointer-events: none;
   }
-  .funil-compare-card .fc-val {
-    font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 600; color: var(--text);
-  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast.success { background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.4); color: var(--green); }
+  .toast.error   { background: rgba(227,0,27,0.12);  border: 1px solid var(--border-red);  color: #ff6b6b; }
 
   /* ── LOADING ── */
   .overlay { position: fixed; inset: 0; background: rgba(10,10,10,0.93); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; gap: 14px; }
   .spinner { width: 42px; height: 42px; border: 3px solid var(--border); border-top-color: var(--red); border-radius: 50%; animation: spin 0.8s linear infinite; }
-  @keyframes spin { to { transform: rotate(360deg); } }
   .overlay-text { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-dim); letter-spacing: 2px; }
   .error-box { background: rgba(227,0,27,0.1); border: 1px solid var(--red); border-radius: 12px; padding: 24px 32px; text-align: center; max-width: 460px; }
   .error-box h3 { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--red); margin-bottom: 8px; }
@@ -437,10 +426,14 @@
     .cards-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
     .vendas-cards-grid { grid-template-columns: 1fr 1fr; }
     .funil-compare-grid { grid-template-columns: 1fr; }
+    .btn-sync span { display: none; }
   }
 </style>
 </head>
 <body>
+
+<!-- ── TOAST ── -->
+<div class="toast" id="toast"></div>
 
 <div class="overlay" id="loadingOverlay">
   <div class="spinner"></div>
@@ -453,6 +446,13 @@
     <h1>DONHA <span>DASHBOARD</span></h1>
   </div>
   <div class="header-right">
+    <button class="btn-sync" id="btnSync" title="Reclassificar vendas na planilha">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/>
+        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+      </svg>
+      <span>ATUALIZAR VENDAS</span>
+    </button>
     <div class="status-dot" id="statusDot"></div>
     <div class="status-label" id="statusLabel">AGUARDANDO</div>
   </div>
@@ -523,7 +523,7 @@
     </div>
   </div>
 
-  <!-- ── SUB-TABS DE FUNIL (visível apenas quando seg = mkt) ── -->
+  <!-- ── SUB-TABS DE FUNIL ── -->
   <div class="funil-bar" id="funilBar" style="display:none;">
     <span class="funil-bar-label">FUNIS MKT</span>
     <button class="funil-tab funil-todos active" data-funil="todos">GERAL</button>
@@ -553,7 +553,6 @@
   <!-- ══ MÉTRICAS PAGE ══ -->
   <div id="metricasPage">
 
-    <!-- Vista normal (cards + gráfico + funil) -->
     <div id="cardsView">
       <div class="cards-section">
         <div class="cards-section-header">
@@ -586,7 +585,6 @@
       </div>
     </div>
 
-    <!-- Vista tabela -->
     <div id="tableView">
       <div class="table-wrap">
         <table>
@@ -597,19 +595,12 @@
       </div>
     </div>
 
-    <!-- ══ FUNIL INDIVIDUALIZADO (substitui cardsView + tableView quando funil ≠ todos) ══ -->
     <div id="funilView">
-
-      <!-- cabeçalho com nome do funil -->
       <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
         <div class="cards-section-label">FUNIL</div>
         <div class="funil-header-badge" id="funilBadge">—</div>
       </div>
-
-      <!-- cards do funil -->
       <div class="cards-grid" id="funilCardsGrid"></div>
-
-      <!-- gráfico do funil -->
       <div class="chart-panel">
         <div class="chart-header">
           <div class="chart-title" id="funilChartTitle">EVOLUÇÃO DIÁRIA</div>
@@ -617,13 +608,10 @@
         </div>
         <div class="chart-body"><canvas id="funilLineChart"></canvas></div>
       </div>
-
-      <!-- funil visual -->
       <div class="funnel-panel">
         <div class="funnel-title">FUNIL DO PERÍODO</div>
         <div id="funilFunnelContainer"></div>
       </div>
-
     </div>
 
   </div>
@@ -667,9 +655,9 @@ const FUNIL_NAMES = ['Nita', 'Weburn', 'Mecabo', 'Mecabo Protocolo', 'Barbara Is
 // ════════════════════════════════════════════
 let allData      = [];
 let vendasData   = [];
-let funilData    = {};   // { 'Nita': [...], 'Weburn': [...], … }
+let funilData    = {};
 let seg          = 'mkt';
-let activeFunil  = 'todos'; // 'todos' ou nome do funil
+let activeFunil  = 'todos';
 let vSeg         = 'todos';
 let viewMode     = 'cards';
 let showSecondary= false;
@@ -718,7 +706,6 @@ const METRICS_CONFIG = [
 const metricVis = {};
 METRICS_CONFIG.forEach(m => metricVis[m.key] = m.on);
 
-// toggles independentes para o gráfico do funil
 const FUNIL_METRICS_CONFIG = [
   { key:'chamados',    label:'Prospecções', format:'num', on:true  },
   { key:'conectados',  label:'Conexões',    format:'num', on:true  },
@@ -744,6 +731,17 @@ const TABLE_COLS = [
   { key:'semInteresse',   label:'Sem Interesse',  format:'num'  },
   { key:'transferencias', label:'Transferências', format:'num'  },
 ];
+
+// ════════════════════════════════════════════
+// TOAST
+// ════════════════════════════════════════════
+function showToast(msg, type = 'success', duration = 3500) {
+  const t = document.getElementById('toast');
+  const icon = type === 'success' ? '✓' : '✕';
+  t.innerHTML = `<span>${icon}</span> ${msg}`;
+  t.className = `toast ${type} show`;
+  setTimeout(() => { t.classList.remove('show'); }, duration);
+}
 
 // ════════════════════════════════════════════
 // PCT COLOR RULES
@@ -794,6 +792,40 @@ async function fetchFunils() {
   } catch(e) {
     funilData = {};
     console.warn('Erro ao carregar dados dos funis.');
+  }
+}
+
+// ════════════════════════════════════════════
+// SINCRONIZAR VENDAS (POST → doPost)
+// ════════════════════════════════════════════
+async function sincronizarVendas() {
+  const btn = document.getElementById('btnSync');
+  btn.classList.add('loading');
+
+  try {
+    const r = await fetch(APP_SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'classificarVendas' }),
+    });
+    const data = await r.json();
+    btn.classList.remove('loading');
+
+    if (data.ok) {
+      btn.classList.add('success');
+      showToast('Vendas reclassificadas com sucesso!', 'success');
+
+      // Rebusca os dados de vendas e atualiza a view
+      await fetchVendas();
+      if (activePage === 'vendas') refreshVendas();
+
+      setTimeout(() => btn.classList.remove('success'), 3000);
+    } else {
+      showToast('Erro: ' + (data.msg || 'Resposta inesperada'), 'error');
+    }
+  } catch(err) {
+    btn.classList.remove('loading');
+    showToast('Falha na requisição. Verifique o Apps Script.', 'error');
+    console.error(err);
   }
 }
 
@@ -850,7 +882,6 @@ function sum(rows, field) {
 }
 
 function sumF(rows, field) {
-  // soma direta de array de objetos planos (funil)
   let s = 0, has = false;
   rows.forEach(r => { const v = r[field]; if (v !== null && v !== undefined) { s += v; has = true; } });
   return has ? s : null;
@@ -1066,7 +1097,7 @@ function renderFunilChart(rows) {
 }
 
 // ════════════════════════════════════════════
-// FUNNEL VISUAL (reutilizado)
+// FUNNEL VISUAL
 // ════════════════════════════════════════════
 function renderFunnelInto(containerId, agg) {
   const steps = [
@@ -1312,14 +1343,12 @@ function renderVendasTable(rows) {
 // REFRESH — lógica central
 // ════════════════════════════════════════════
 function refreshMetricas() {
-  const isMkt     = seg === 'mkt';
-  const isFunil   = isMkt && activeFunil !== 'todos';
+  const isMkt   = seg === 'mkt';
+  const isFunil = isMkt && activeFunil !== 'todos';
 
-  // mostra/oculta a barra de funis
   document.getElementById('funilBar').style.display = isMkt ? '' : 'none';
 
   if (isFunil) {
-    // ── vista individualizada de funil ──
     document.getElementById('cardsView').style.display  = 'none';
     document.getElementById('tableView').classList.remove('visible');
     document.getElementById('funilView').classList.add('visible');
@@ -1335,7 +1364,6 @@ function refreshMetricas() {
     renderFunnelInto('funilFunnelContainer', agg);
 
   } else {
-    // ── vista normal (todos os segmentos ou MKT geral) ──
     document.getElementById('funilView').classList.remove('visible');
 
     const rows = getFiltered();
@@ -1405,7 +1433,6 @@ async function init() {
       document.querySelectorAll('.seg-tab[data-seg]').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       seg = btn.dataset.seg;
-      // ao trocar de segmento, reseta o funil ativo
       activeFunil = 'todos';
       document.querySelectorAll('.funil-tab').forEach(b => b.classList.remove('active'));
       document.querySelector('.funil-tab[data-funil="todos"]')?.classList.add('active');
@@ -1447,6 +1474,9 @@ async function init() {
 
   // Aplicar filtro de data
   document.getElementById('btnApply').addEventListener('click', refreshAll);
+
+  // Botão de sincronização de vendas
+  document.getElementById('btnSync').addEventListener('click', sincronizarVendas);
 
   refreshMetricas();
 }
