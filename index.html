@@ -194,6 +194,85 @@
   .funil-tab.funil-todos { color: var(--text-dim); }
   .funil-tab.funil-todos.active { color: var(--text); border-bottom-color: var(--text-dim); }
 
+  /* ── TOOLTIP (?) ── */
+  .info-wrap {
+    position: relative;
+    display: inline-flex; align-items: center;
+  }
+
+  .info-btn {
+    width: 16px; height: 16px; border-radius: 50%;
+    border: 1px solid var(--text-muted);
+    background: transparent; color: var(--text-muted);
+    font-size: 10px; font-weight: 700; line-height: 1;
+    cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+    margin-left: 6px; flex-shrink: 0; transition: border-color 0.15s, color 0.15s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .info-btn:hover { border-color: var(--text-dim); color: var(--text-dim); }
+
+  .info-tooltip {
+    display: none;
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 50%; transform: translateX(-50%);
+    background: var(--surface3);
+    border: 1px solid var(--border-red);
+    border-radius: 10px;
+    padding: 12px 15px;
+    width: 260px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px; line-height: 1.6;
+    color: var(--text-dim);
+    z-index: 100;
+    pointer-events: none;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  }
+  .info-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%; left: 50%; transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: var(--border-red);
+  }
+  .info-tooltip strong {
+    display: block; color: var(--text);
+    font-size: 11px; letter-spacing: 1px; text-transform: uppercase;
+    margin-bottom: 6px; font-family: 'JetBrains Mono', monospace;
+  }
+  .info-tooltip ul {
+    margin: 6px 0 0 14px; padding: 0;
+  }
+  .info-tooltip ul li { margin-bottom: 2px; }
+
+  .info-wrap:hover .info-tooltip { display: block; }
+
+  /* tooltip alinhado à esquerda quando muito à direita da tela */
+  .info-wrap.align-left .info-tooltip {
+    left: 0; transform: none;
+  }
+  .info-wrap.align-left .info-tooltip::after {
+    left: 20px; transform: none;
+  }
+
+  /* tooltip nos cards de extras — abre para baixo */
+  .card-info-wrap {
+    position: absolute; top: 14px; right: 14px;
+  }
+  .card-tooltip {
+    bottom: auto !important;
+    top: calc(100% + 8px) !important;
+    left: auto !important;
+    right: 0 !important;
+    transform: none !important;
+  }
+  .card-tooltip::after {
+    top: auto !important;
+    bottom: 100% !important;
+    border-top-color: transparent !important;
+    border-bottom-color: var(--border-red) !important;
+  }
+
   /* ── MAIN ── */
   main { position: relative; z-index: 1; padding: 26px 40px; display: flex; flex-direction: column; gap: 26px; }
 
@@ -240,7 +319,7 @@
   .card-note { font-size: 10px; color: var(--amber); margin-top: 4px; font-family: 'JetBrains Mono', monospace; }
 
   .extras-row { display: flex; gap: 12px; flex-wrap: wrap; }
-  .extras-row .card { flex: 1; min-width: 170px; max-width: 260px; border-color: rgba(245,158,11,0.2); }
+  .extras-row .card { flex: 1; min-width: 170px; max-width: 260px; border-color: rgba(245,158,11,0.2); overflow: visible; }
   .extras-row .card::before { background: var(--amber); }
   .extras-row .card:hover { border-color: rgba(245,158,11,0.45); }
 
@@ -404,10 +483,36 @@
 <div id="metricasControls">
   <div class="controls">
     <div class="seg-tabs">
-      <button class="seg-tab active" data-seg="mkt">MKT</button>
+      <div class="info-wrap">
+        <button class="seg-tab active" data-seg="mkt">MKT</button>
+        <span class="info-btn">?</span>
+        <div class="info-tooltip">
+          <strong>MKT</strong>
+          Leads que são recuperação das páginas de Marketing:
+          <ul>
+            <li>Popup</li>
+            <li>Cartão recusado</li>
+            <li>Abandono de Carrinho</li>
+          </ul>
+        </div>
+      </div>
       <button class="seg-tab" data-seg="todos">TODOS</button>
-      <button class="seg-tab" data-seg="assinaturas">ASSINATURAS ATIVAS</button>
-      <button class="seg-tab" data-seg="webhook">WEBHOOK</button>
+      <div class="info-wrap">
+        <button class="seg-tab" data-seg="assinaturas">ASSINATURAS ATIVAS</button>
+        <span class="info-btn">?</span>
+        <div class="info-tooltip">
+          <strong>Assinaturas Ativas</strong>
+          Leads que realizaram a compra e após 7 dias recebem um disparo oferecendo Nita.
+        </div>
+      </div>
+      <div class="info-wrap">
+        <button class="seg-tab" data-seg="webhook">WEBHOOK</button>
+        <span class="info-btn">?</span>
+        <div class="info-tooltip align-left">
+          <strong>Webhook</strong>
+          Assinantes que na última hora entraram na plataforma. Temos acesso a essas informações a partir da Webhook criada pelo Castilho. Para esses assinantes oferecemos Nita.
+        </div>
+      </div>
     </div>
     <div class="view-toggle">
       <button class="view-btn active" id="btnViewCards">
@@ -834,9 +939,25 @@ function renderCards(agg) {
     let note = '';
     if (cfg.key === 'transferencias') note = `<div class="card-note">⚠ Disponível a partir de Abril/2026</div>`;
     else if (v === null) note = `<div class="card-note">⚠ Coluna ainda não mapeada neste segmento</div>`;
+
+    const tooltips = {
+      semInteresse:   { title:'Sem Interesse', text:'Quem recebeu o disparo e clicou no botão de opt-out.' },
+      transferencias: { title:'Transferências', text:'Quem estava em conexão com a IA e foi transferido para o humano resolver algo.' },
+    };
+    const tip = tooltips[cfg.key];
+    const tipHtml = tip ? `
+      <div class="info-wrap card-info-wrap">
+        <span class="info-btn">?</span>
+        <div class="info-tooltip align-left card-tooltip">
+          <strong>${tip.title}</strong>${tip.text}
+        </div>
+      </div>` : '';
+
     const el = document.createElement('div');
     el.className = 'card';
+    el.style.cssText = 'overflow:visible; position:relative;';
     el.innerHTML = `
+      ${tipHtml}
       <span class="card-icon">${cfg.icon}</span>
       <div class="card-label">${cfg.label}</div>
       <div class="card-value ${v===null?'na':''}">${v !== null ? fN(v) : '—'}</div>
