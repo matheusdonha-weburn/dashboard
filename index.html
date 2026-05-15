@@ -201,10 +201,10 @@
   }
 
   .info-btn {
-    width: 15px; height: 15px; border-radius: 50%;
+    width: 12px; height: 12px; border-radius: 50%;
     border: 1px solid var(--text-muted);
     background: transparent; color: var(--text-muted);
-    font-size: 9px; font-weight: 700; line-height: 1;
+    font-size: 8px; font-weight: 700; line-height: 1;
     cursor: default; display: inline-flex; align-items: center; justify-content: center;
     flex-shrink: 0; transition: border-color 0.15s, color 0.15s;
     font-family: 'DM Sans', sans-serif; user-select: none;
@@ -252,17 +252,23 @@
   }
   .tab-tooltip::after { left: 50%; transform: translateX(-50%); }
 
-  /* nos cards — ? fica no canto sup-esq; tooltip abre para baixo */
+  /* MKT fica muito à esquerda — abre para a direita */
+  .tab-tooltip-right {
+    left: 0; transform: none;
+  }
+  .tab-tooltip-right::after { left: 14px; transform: none; }
+
+  /* nos cards — ? fica no canto sup-dir */
   .card-info-wrap {
     position: absolute;
-    top: 14px; left: 14px;
+    top: 14px; right: 14px;
     z-index: 10;
   }
   .card-tooltip {
-    left: 0; transform: none;
+    left: auto; right: 0; transform: none;
     width: 220px;
   }
-  .card-tooltip::after { left: 14px; transform: none; }
+  .card-tooltip::after { left: auto; right: 14px; transform: none; }
 
   /* ── MAIN ── */
   main { position: relative; z-index: 1; padding: 26px 40px; display: flex; flex-direction: column; gap: 26px; }
@@ -477,7 +483,7 @@
       <div class="info-wrap">
         <button class="seg-tab active" data-seg="mkt">MKT</button>
         <span class="info-btn" style="margin-left:5px;">?</span>
-        <div class="info-tooltip tab-tooltip">
+        <div class="info-tooltip tab-tooltip-right">
           <strong>MKT</strong>
           Leads que são recuperação das páginas de Marketing:
           <ul>
@@ -949,7 +955,7 @@ function renderCards(agg) {
     el.style.cssText = 'overflow:visible; position:relative;';
     el.innerHTML = `
       ${tipHtml}
-      <span class="card-icon" style="margin-top:${tip ? '18px' : '0'}; display:block;">${cfg.icon}</span>
+      <span class="card-icon" style="display:block;">${cfg.icon}</span>
       <div class="card-label">${cfg.label}</div>
       <div class="card-value ${v===null?'na':''}">${v !== null ? fN(v) : '—'}</div>
       ${note}
