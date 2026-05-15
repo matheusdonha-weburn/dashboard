@@ -201,77 +201,68 @@
   }
 
   .info-btn {
-    width: 16px; height: 16px; border-radius: 50%;
+    width: 15px; height: 15px; border-radius: 50%;
     border: 1px solid var(--text-muted);
     background: transparent; color: var(--text-muted);
-    font-size: 10px; font-weight: 700; line-height: 1;
-    cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
-    margin-left: 6px; flex-shrink: 0; transition: border-color 0.15s, color 0.15s;
-    font-family: 'DM Sans', sans-serif;
+    font-size: 9px; font-weight: 700; line-height: 1;
+    cursor: default; display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: border-color 0.15s, color 0.15s;
+    font-family: 'DM Sans', sans-serif; user-select: none;
   }
-  .info-btn:hover { border-color: var(--text-dim); color: var(--text-dim); }
+  .info-wrap:hover .info-btn { border-color: var(--text-dim); color: var(--text-dim); }
 
   .info-tooltip {
     display: none;
     position: absolute;
-    bottom: calc(100% + 10px);
-    left: 50%; transform: translateX(-50%);
+    top: calc(100% + 10px);
+    left: 0; transform: none;
     background: var(--surface3);
     border: 1px solid var(--border-red);
     border-radius: 10px;
     padding: 12px 15px;
-    width: 260px;
+    width: 240px;
     font-family: 'DM Sans', sans-serif;
     font-size: 12px; line-height: 1.6;
     color: var(--text-dim);
-    z-index: 100;
+    z-index: 200;
     pointer-events: none;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.6);
   }
+  /* seta aponta para cima */
   .info-tooltip::after {
     content: '';
     position: absolute;
-    top: 100%; left: 50%; transform: translateX(-50%);
+    bottom: 100%; left: 14px; transform: none;
     border: 6px solid transparent;
-    border-top-color: var(--border-red);
+    border-bottom-color: var(--border-red);
   }
   .info-tooltip strong {
     display: block; color: var(--text);
-    font-size: 11px; letter-spacing: 1px; text-transform: uppercase;
+    font-size: 10px; letter-spacing: 1px; text-transform: uppercase;
     margin-bottom: 6px; font-family: 'JetBrains Mono', monospace;
   }
-  .info-tooltip ul {
-    margin: 6px 0 0 14px; padding: 0;
-  }
+  .info-tooltip ul { margin: 6px 0 0 14px; padding: 0; }
   .info-tooltip ul li { margin-bottom: 2px; }
 
   .info-wrap:hover .info-tooltip { display: block; }
 
-  /* tooltip alinhado à esquerda quando muito à direita da tela */
-  .info-wrap.align-left .info-tooltip {
-    left: 0; transform: none;
+  /* nas tabs — centraliza horizontalmente sob o ? */
+  .tab-tooltip {
+    left: 50%; transform: translateX(-50%);
   }
-  .info-wrap.align-left .info-tooltip::after {
-    left: 20px; transform: none;
-  }
+  .tab-tooltip::after { left: 50%; transform: translateX(-50%); }
 
-  /* tooltip nos cards de extras — abre para baixo */
+  /* nos cards — ? fica no canto sup-esq; tooltip abre para baixo */
   .card-info-wrap {
-    position: absolute; top: 14px; right: 14px;
+    position: absolute;
+    top: 14px; left: 14px;
+    z-index: 10;
   }
   .card-tooltip {
-    bottom: auto !important;
-    top: calc(100% + 8px) !important;
-    left: auto !important;
-    right: 0 !important;
-    transform: none !important;
+    left: 0; transform: none;
+    width: 220px;
   }
-  .card-tooltip::after {
-    top: auto !important;
-    bottom: 100% !important;
-    border-top-color: transparent !important;
-    border-bottom-color: var(--border-red) !important;
-  }
+  .card-tooltip::after { left: 14px; transform: none; }
 
   /* ── MAIN ── */
   main { position: relative; z-index: 1; padding: 26px 40px; display: flex; flex-direction: column; gap: 26px; }
@@ -485,8 +476,8 @@
     <div class="seg-tabs">
       <div class="info-wrap">
         <button class="seg-tab active" data-seg="mkt">MKT</button>
-        <span class="info-btn">?</span>
-        <div class="info-tooltip">
+        <span class="info-btn" style="margin-left:5px;">?</span>
+        <div class="info-tooltip tab-tooltip">
           <strong>MKT</strong>
           Leads que são recuperação das páginas de Marketing:
           <ul>
@@ -499,16 +490,16 @@
       <button class="seg-tab" data-seg="todos">TODOS</button>
       <div class="info-wrap">
         <button class="seg-tab" data-seg="assinaturas">ASSINATURAS ATIVAS</button>
-        <span class="info-btn">?</span>
-        <div class="info-tooltip">
+        <span class="info-btn" style="margin-left:5px;">?</span>
+        <div class="info-tooltip tab-tooltip">
           <strong>Assinaturas Ativas</strong>
           Leads que realizaram a compra e após 7 dias recebem um disparo oferecendo Nita.
         </div>
       </div>
       <div class="info-wrap">
         <button class="seg-tab" data-seg="webhook">WEBHOOK</button>
-        <span class="info-btn">?</span>
-        <div class="info-tooltip align-left">
+        <span class="info-btn" style="margin-left:5px;">?</span>
+        <div class="info-tooltip tab-tooltip">
           <strong>Webhook</strong>
           Assinantes que na última hora entraram na plataforma. Temos acesso a essas informações a partir da Webhook criada pelo Castilho. Para esses assinantes oferecemos Nita.
         </div>
@@ -948,7 +939,7 @@ function renderCards(agg) {
     const tipHtml = tip ? `
       <div class="info-wrap card-info-wrap">
         <span class="info-btn">?</span>
-        <div class="info-tooltip align-left card-tooltip">
+        <div class="info-tooltip card-tooltip">
           <strong>${tip.title}</strong>${tip.text}
         </div>
       </div>` : '';
@@ -958,7 +949,7 @@ function renderCards(agg) {
     el.style.cssText = 'overflow:visible; position:relative;';
     el.innerHTML = `
       ${tipHtml}
-      <span class="card-icon">${cfg.icon}</span>
+      <span class="card-icon" style="margin-top:${tip ? '18px' : '0'}; display:block;">${cfg.icon}</span>
       <div class="card-label">${cfg.label}</div>
       <div class="card-value ${v===null?'na':''}">${v !== null ? fN(v) : '—'}</div>
       ${note}
